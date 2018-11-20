@@ -12,14 +12,16 @@ with open('LICENSE') as f:
     license = f.read()
 
 setup(
-    name='sample',
+    name='dynamicstorm',
     version='0.1.0',
-    description='Sample package for Python-Guide.org',
+    description='manipulate data which output from DynamicStudio',
     long_description=readme,
-    author='Kenneth Reitz',
-    author_email='me@kennethreitz.com',
-    url='https://github.com/kennethreitz/samplemod',
+    author='Kenya Igarashi',
+    author_email='kenyayanke223@gmail.com',
+    install_requires=['numpy','pandas','matplotlib','tkinter'],
+    url='https://github.com/fiftystorm36/dynamicstorm',
     license=license,
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=('tests', 'docs')),
+    test_suite='tests'
 )
 
