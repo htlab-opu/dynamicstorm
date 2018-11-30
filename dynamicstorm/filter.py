@@ -38,8 +38,8 @@ class Filter:
     def show_incorrect_vector_all(self, file_list):
         """含まれる瞬時データ全てがそれぞれ持つ誤ベクトル数を表示する"""
         incorrect_vector_list = []
-        for i, file in enumerate(file_list):
-            total_incorrect_vector = self.get_total_incorrect_vector(file)
+        for i, file in enumerate(tqdm(file_list)):
+            total_incorrect_vector = cls.get_total_incorrect_vector(file)
             incorrect_vector_list.append(total_incorrect_vector)
         incorrect_vector_mean = mean(incorrect_vector_list)
 
