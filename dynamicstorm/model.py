@@ -12,7 +12,6 @@ class ExptSet:
     def __init__(self, target_dir):
         self.file_list = []
         self.time_averaged_data = ''
-        self.filter = dyfil.Filter()
         self.statistics = dyst.Statistics()
         if not target_dir == '':
             """
@@ -33,8 +32,8 @@ class ExptSet:
             print('No applicable data in directory.\nExit')
             sys.exit()
 
-    def filter(self, filter):
-        self.file_list = self.filter.filter_incorrect_vector(self.file_list, filter)
+    def filter(self, filter_value):
+        self.file_list = dyfil.Filter().filter_incorrect_vector(self.file_list, filter_value)
 
     def time_averaging(self):
         self.statistics.time_averaging(self.file_list)
