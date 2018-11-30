@@ -48,12 +48,14 @@ class ExptSet:
             self.file_list.append(expt_instance.filelist)
         # TODO: 平均済みのデータがあるものとないものを結合する場合の考慮 → 削除でよさげ
 
+
 class InstantData:
     """瞬時データ"""
 
     def __init__(self, file):
         self.file = file
         header_row = self.get_header_row(file)  # ヘッダ行数を取得
+        self.df = pd.read_csv(self.file, header=header_row)  # ファイルからデータを読み出し
 
     @staticmethod
     def get_header_row(file):
