@@ -101,3 +101,4 @@ def parallel_task(args):
             if np.sum((status == 1) | (status == 17)) >= filter_value:
                 error_file_index_list.append(i)
     return error_file_index_list
+fil = Filter()
