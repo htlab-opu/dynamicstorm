@@ -35,7 +35,8 @@ class Filter:
         plt.grid(which='minor')
         plt.show()
 
-    def show_incorrect_vector_all(self, file_list):
+    @classmethod
+    def show_incorrect_vector_all(cls, file_list):
         """含まれる瞬時データ全てがそれぞれ持つ誤ベクトル数を表示する"""
         incorrect_vector_list = []
         for i, file in enumerate(tqdm(file_list)):
