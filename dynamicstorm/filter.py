@@ -68,7 +68,7 @@ class Filter:
         for error_index in error_index_list:
             del file_list[error_index]
         after = len(file_list)
-        print('finish!\n''filtered file:', str(before - after) + '/' + str(before))
+        print('Finish!\nFiltered data:', str(before - after) + '/' + str(before))
         return file_list
 
     @staticmethod
