@@ -41,7 +41,8 @@ class ExptSet:
     def join(self, expt_instance_list):
         """
         複数の実験データを結合してまとめて取り扱えるようにする
-        時間平均，空間平均済みのデータがある場合は結合後のデータで上書きする
+        全てに時間平均，空間平均済みのデータがある場合は結合後のデータで上書きする
+        一つでも平均済みのデータがない物があった場合は平均データを空にする
         """
         for expt_instance in expt_instance_list:
             self.file_list.append(expt_instance.filelist)
