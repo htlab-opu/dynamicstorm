@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as tick
 from statistics import mean
 from tqdm import tqdm
 import multiprocessing as mp
@@ -23,10 +24,12 @@ class Filter:
         incorrect_vector_mean = mean(incorrect_vector_list)
 
         # plot
-        plt.title('incorrect vector of first 100 data')
-        plt.plot(incorrect_vector_list)
+        plt.title('incorrect vector NO. of first {} data'.format(example_number))
+        plt.scatter(range(len(incorrect_vector_list)), incorrect_vector_list)
         plt.axhline(incorrect_vector_mean, color='black')
         plt.text(0, incorrect_vector_mean + 50, 'mean value = ' + str(incorrect_vector_mean))
+        plt.gca().yaxis.set_minor_locator(tick.MultipleLocator(100))
+        plt.grid(which='minor')
         plt.show()
 
     def show_incorrect_vector_all(self, file_list):
@@ -38,10 +41,11 @@ class Filter:
         incorrect_vector_mean = mean(incorrect_vector_list)
 
         # plot
-        plt.title('incorrect vector of all data')
-        plt.plot(incorrect_vector_list)
+        plt.title('incorrect vector NO. of all data')
+        plt.scatter(range(len(incorrect_vector_list)), incorrect_vector_list)
         plt.axhline(incorrect_vector_mean, color='black')
         plt.text(0, incorrect_vector_mean + 50, 'mean value = ' + str(incorrect_vector_mean))
+        plt.grid()
         plt.show()
 
     @staticmethod
