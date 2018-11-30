@@ -82,23 +82,25 @@ class Filter:
 
 def parallel_task(args):
     """並列計算タスク"""
-    file_list, totalcore, currentcore, filter_value = args
+    file_list, total_core, current_core, filter_value = args
     file_count = len(file_list)
-    start = int(file_count * currentcore / totalcore)
-    end = int(file_count * (currentcore + 1) / totalcore) - 1
+    start = int(file_count * current_core / total_core)
+    end = int(file_count * (current_core + 1) / total_core) - 1
     header = dymod.InstantData.get_header_row(file_list[0])
     error_file_index_list = []
-    if currentcore == 0:
-        text = 'task ' + '1/' + str(totalcore)
+    if current_core == 0:
+        text = 'filtering task ' + '1/' + str(total_core)
         for i in tqdm(range(start, end), desc=text):
             status = pd.read_csv(file_list[i], header=header)['Status']
             if np.sum((status == 1) | (status == 17)) >= filter_value:
                 error_file_index_list.append(i)
-        print('Wait till other {} parallel tasks will have finished.'.format(totalcore - 1))
+        print('Wait till other {} parallel tasks will have finished.'.format(total_core - 1))
     else:
         for i in range(start, end):
             status = pd.read_csv(file_list[i], header=header)['Status']
             if np.sum((status == 1) | (status == 17)) >= filter_value:
                 error_file_index_list.append(i)
     return error_file_index_list
+
+
 fil = Filter()
