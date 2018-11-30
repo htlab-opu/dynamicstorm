@@ -54,7 +54,6 @@ class InstantData:
     def __init__(self, file):
         self.file = file
         header_row = self.get_header_row(file)  # ヘッダ行数を取得
-        self.dataframe = pd.read_csv(self.file, header=header_row)  # ファイルからデータを読み出し
 
     @staticmethod
     def get_header_row(file):
@@ -68,4 +67,4 @@ class InstantData:
 
     def get_data(self, label):
         """指定したラベルのデータ列を取り出す"""
-        return self.dataframe[label]
+        return self.df[label]
