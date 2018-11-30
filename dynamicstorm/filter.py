@@ -13,14 +13,17 @@ from . import statistics as dyst
 class Filter:
     """誤ベクトル数の確認，誤ベクトル数によるフィルタリング処理"""
 
-    def show_incorrect_vector_example(self, file_list):
+    @classmethod
+    def show_incorrect_vector_example(cls, file_list, example_number):
         """含まれる瞬時データの内100個がそれぞれ持つ誤ベクトル数を表示する"""
         incorrect_vector_list = []
-        for i, file in enumerate(file_list):
-            total_incorrect_vector = self.get_total_incorrect_vector(file)
+        try:
+            file_list = file_list[0:example_number]
+        except:
+            pass
+        for i, file in enumerate(tqdm(file_list)):
+            total_incorrect_vector = cls.get_total_incorrect_vector(file)
             incorrect_vector_list.append(total_incorrect_vector)
-            if i > 100:
-                break
         incorrect_vector_mean = mean(incorrect_vector_list)
 
         # plot
