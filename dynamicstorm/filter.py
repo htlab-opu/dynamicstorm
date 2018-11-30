@@ -55,10 +55,10 @@ class Filter:
     def filter_incorrect_vector(file_list, filter_value):
         """ファイル名のリストから，誤ベクトル数がfilter_value以上のファイルの名前を除外する"""
         before = len(file_list)
-        print('Processing')
-        totalcore = mp.cpu_count()
-        pool = mp.Pool(totalcore)
-        args = [(file_list, totalcore, i, filter_value) for i in range(totalcore)]
+        print('Filtering...')
+        total_core = mp.cpu_count()
+        pool = mp.Pool(total_core)
+        args = [(file_list, total_core, i, filter_value) for i in range(total_core)]
         callback = pool.map(parallel_task, args)
         error_index_list = []
         for each_error_index_list in callback:
