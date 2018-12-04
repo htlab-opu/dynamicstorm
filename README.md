@@ -12,6 +12,7 @@ Installation:
 ```
 $ pip install git+https://github.com/fiftystorm36/dynamicstorm.git
 ```
+Git command is required. Use GitBash if you use the Windows operating system, for example.
 
 How to upgrade:
 ```
