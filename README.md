@@ -3,7 +3,7 @@ This module is for file which is output from DynamicStudio.
 
 Functions:
 
-- applying incorrect filter to instant data list
+- applying incorrect vector filter to instant data list
 - turbulent statistics
 - space averaging
 
