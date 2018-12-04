@@ -1,5 +1,5 @@
 # DynamicStorm
-This module is for file which is output from DynamicStudio.
+This module is for the file which is output from DynamicStudio.
 
 Functions:
 
