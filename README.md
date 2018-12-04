@@ -1,22 +1,22 @@
 # DynamicStorm
-DynamicStudio から出力した瞬時データの集合を取り扱うためのモジュール．
+This module is for file which is output from DynamicStudio.
 
-- 誤ベクトル数の多いサンプルのフィルタリング
-- 乱流統計量の導出
-- 空間平均
+Functions:
 
-が主な機能である．
+- applying incorrect filter to instant data list
+- turbulent statistics
+- space averaging
 
 ## Getting Start
-コマンドラインにて以下のコマンドを実行し，モジュールをインストールする
+Installation:
 ```
 $ pip install git+https://github.com/fiftystorm36/dynamicstorm.git
 ```
 
-アップグレードし，更新を適用する場合
+How to upgrade:
 ```
 $ pip install git+https://github.com/fiftystorm36/dynamicstorm.git -U
 ```
 
 ## Sample
-モジュールの使用例: [examples](/examples)
+[examples](/examples)
