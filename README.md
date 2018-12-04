@@ -8,13 +8,17 @@ Functions:
 - space averaging
 
 ## Getting Start
-Installation:
+### Installation
+
+Execute following command in terminal.
+
 ```
 $ pip install git+https://github.com/fiftystorm36/dynamicstorm.git
 ```
+
 Git command is required. Use GitBash if you use the Windows operating system, for example.
 
-How to upgrade:
+### How to upgrade
 ```
 $ pip install git+https://github.com/fiftystorm36/dynamicstorm.git -U
 ```
