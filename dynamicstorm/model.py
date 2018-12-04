@@ -1,18 +1,19 @@
 import pandas as pd
 import glob
 import sys
+import numpy as np
+import multiprocessing as mp
+from tqdm import tqdm
 
-from . import filter as dyfil
-from . import statistics as dyst
+from . import filtering as dyfil
+from .datalabel import label_dict
 
 
 class ExptSet:
-    """実験"""
+    """瞬時データの集まり"""
 
-    def __init__(self, target_dir):
-        self.file_list = []
-        self.time_averaged_data = ''
-        self.statistics = dyst.Statistics()
+    def __init__(self, target_dir=''):
+        self.instant_data_list = []
         if not target_dir == '':
             """
             インスタンス生成時にディレクトリが
@@ -23,30 +24,29 @@ class ExptSet:
 
     def get_file_list(self, location):
         """渡されたディレクトリ内に存在する csv ファイルをリストに格納する"""
-        self.file_list = glob.glob(location + '/*.csv')
-        if len(self.file_list) == 0:
-            self.file_list = glob.glob(location + '/*/*.csv')
-        if len(self.file_list) == 0:
-            self.file_list = glob.glob(location + '/*/.*.csv')
-        if len(self.file_list) == 0:
-            print('No applicable data in directory.\nExit')
+        self.instant_data_list = glob.glob(location + '/*.csv')
+        if len(self.instant_data_list) == 0:
+            self.instant_data_list = glob.glob(location + '/*/*.csv')
+        if len(self.instant_data_list) == 0:
+            self.instant_data_list = glob.glob(location + '/*/.*.csv')
+        if len(self.instant_data_list) == 0:
+            print('No applicable data in {}.'.format(location))
             sys.exit()
 
-    def filter(self, filter_value):
-        self.file_list = dyfil.Filter().filter_incorrect_vector(self.file_list, filter_value)
+    def incorrect_vector_filter(self, filter_value):
+        self.instant_data_list = dyfil.Filter().filter_incorrect_vector(self.instant_data_list, filter_value)
 
-    def time_averaging(self):
-        self.statistics.time_averaging(self.file_list)
+    def incorrect_vector_example(self, example_number):
+        dyfil.Filter().show_incorrect_vector_example(self.instant_data_list, example_number)
 
-    def join(self, expt_instance_list):
+    def join(self, expt_set_list):
         """
         複数の実験データを結合してまとめて取り扱えるようにする
-        全てに時間平均，空間平均済みのデータがある場合は結合後のデータで上書きする
-        一つでも平均済みのデータがない物があった場合は平均データを空にする
         """
-        for expt_instance in expt_instance_list:
-            self.file_list.append(expt_instance.filelist)
-        # TODO: 平均済みのデータがあるものとないものを結合する場合の考慮 → 削除でよさげ
+        for expt_set in expt_set_list:
+            self.instant_data_list.extend(expt_set.instant_data_list)
+
+
 class Statistics:
     """時間平均データ"""
 
