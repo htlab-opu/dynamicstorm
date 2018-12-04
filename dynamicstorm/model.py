@@ -219,6 +219,143 @@ def time_averaging_parallel_task(args):
     return U, V, uu, vv, uv, uuu, vvv, uuv, uvv, N
 
 
+class SpaceAverage:
+    """時間平均かつ空間平均データ"""
+
+    def __init__(self, data_frame=None, source_file=None, grid_shape=[74, 101], crop_range=['', '', '', '']):
+        self.space_averaged_data_frame = ''
+        self.grid_shape = grid_shape
+        self.crop_range = []
+        self.set_range(crop_range)
+        if source_file is not None:
+            self.read(source_file)
+        elif data_frame is not None:
+            self.space_averaging(data_frame)
+
+    def save(self, file_name):
+        """空間平均済みデータを保存する"""
+        self.space_averaged_data_frame.to_csv(file_name, index=False)
+
+    def read(self, file_name):
+        """以前保存した解析済みのデータを読み出す"""
+        header = self.get_header_row(file_name)
+        self.space_averaged_data_frame = pd.read_csv(file_name, header=header)
+
+    def set_range(self, crop_range):
+        x_min_mm, x_max_mm, y_min_mm, y_max_mm = crop_range
+        if x_min_mm == '': x_min_mm = 0
+        if x_max_mm == '': x_max_mm = float('inf')
+        if y_min_mm == '': y_min_mm = 0
+        if y_max_mm == '': y_max_mm = float('inf')
+
+        x_min_mm = float(x_min_mm)
+        x_max_mm = float(x_max_mm)
+        y_min_mm = float(y_min_mm)
+        y_max_mm = float(y_max_mm)
+        self.crop_range = x_min_mm, x_max_mm, y_min_mm, y_max_mm
+
+    def space_averaging(self, time_averaged_data_frame):
+        df = time_averaged_data_frame
+        x = df[label_dict['x']['label']].values.reshape(self.grid_shape)[0, :]
+        y = df[label_dict['y']['label']].values.reshape(self.grid_shape)[:, 0]
+
+        x_min_index, x_max_index, y_min_index, y_max_index = get_crop_index(time_averaged_data_frame,
+                                                                            self.grid_shape,
+                                                                            self.crop_range)
+        y = y - y[y_min_index]  # 原点を合わせる
+        y = y[y_min_index:y_max_index + 1]  # 必要な範囲だけ取り出す
+
+        # range 内のデータを取り出す
+        U_tmp = df[label_dict['U']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                x_min_index:x_max_index + 1]
+        V_tmp = df[label_dict['V']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                x_min_index:x_max_index + 1]
+        u_tmp = df[label_dict['u']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                x_min_index:x_max_index + 1]
+        v_tmp = df[label_dict['v']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                x_min_index:x_max_index + 1]
+        uv_tmp = df[label_dict['uv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                 x_min_index:x_max_index + 1]
+        uuu_tmp = df[label_dict['uuu']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                  x_min_index:x_max_index + 1]
+        vvv_tmp = df[label_dict['vvv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                  x_min_index:x_max_index + 1]
+        uuv_tmp = df[label_dict['uuv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                  x_min_index:x_max_index + 1]
+        uvv_tmp = df[label_dict['uvv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                  x_min_index:x_max_index + 1]
+        n_tmp = df[label_dict['N']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                x_min_index:x_max_index + 1]
+
+        # それぞれ空間平均する
+        U_tmp = np.nansum(U_tmp * n_tmp, axis=1)
+        V_tmp = np.nansum(V_tmp * n_tmp, axis=1)
+        u_tmp = np.nansum(u_tmp ** 2 * n_tmp, axis=1)
+        v_tmp = np.nansum(v_tmp ** 2 * n_tmp, axis=1)
+        uv_tmp = np.nansum(uv_tmp * n_tmp, axis=1)
+        uuu_tmp = np.nansum(uuu_tmp * n_tmp, axis=1)
+        vvv_tmp = np.nansum(vvv_tmp * n_tmp, axis=1)
+        uuv_tmp = np.nansum(uuv_tmp * n_tmp, axis=1)
+        uvv_tmp = np.nansum(uvv_tmp * n_tmp, axis=1)
+        N = np.sum(n_tmp, axis=1)
+
+        np.seterr(all='ignore')
+        U = U_tmp / N
+        V = V_tmp / N
+        u = np.sqrt(u_tmp / N)
+        v = np.sqrt(v_tmp / N)
+        uv = uv_tmp / N
+        uuu = uuu_tmp / N
+        vvv = vvv_tmp / N
+        uuv = uuv_tmp / N
+        uvv = uvv_tmp / N
+
+        U[np.isnan(U)] = 0
+        V[np.isnan(V)] = 0
+        u[np.isnan(u)] = 0
+        v[np.isnan(v)] = 0
+        uv[np.isnan(uv)] = 0
+        uuu[np.isnan(uuu)] = 0
+        vvv[np.isnan(vvv)] = 0
+        uuv[np.isnan(uuv)] = 0
+        uvv[np.isnan(uvv)] = 0
+
+        U[np.isinf(U)] = 0
+        V[np.isinf(V)] = 0
+        u[np.isinf(u)] = 0
+        v[np.isinf(v)] = 0
+        uv[np.isinf(uv)] = 0
+        uuu[np.isinf(uuu)] = 0
+        vvv[np.isinf(vvv)] = 0
+        uuv[np.isinf(uuv)] = 0
+        uvv[np.isinf(uvv)] = 0
+
+        self.space_averaged_data_frame = pd.DataFrame({
+            'y': y,
+            'U': U,
+            'V': V,
+            'u': u,
+            'v': v,
+            'uv': uv,
+            'uuu': uuu,
+            'vvv': vvv,
+            'uuv': uuv,
+            'uvv': uvv,
+            'N': N
+        })
+
+    @staticmethod
+    def get_header_row(file):
+        """データのヘッダ行数を取得する"""
+        file = open(file, 'r')
+        for i, line in enumerate(file):
+            if line[0] == 'x':
+                file.close()
+                return i
+        file.close()
+
+    def join(self):
+        pass
 
 
 class InstantData:
