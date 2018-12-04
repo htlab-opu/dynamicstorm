@@ -242,3 +242,29 @@ class InstantData:
     def get_data(self, label):
         """指定したラベルのデータ列を取り出す"""
         return self.df[label]
+
+
+def get_crop_index(time_averaged_data_frame, grid_shape=[74, 101], crop_range=['', '', '', '']):
+    """クロップ後のデータのインデックスを取得"""
+    df = time_averaged_data_frame
+    x = df[label_dict['x']['label']].values.reshape(grid_shape)[0, :]
+    y = df[label_dict['y']['label']].values.reshape(grid_shape)[:, 0]
+
+    # range に対応するデータフレームの範囲を探索
+    x_min_mm, x_max_mm, y_min_mm, y_max_mm = crop_range
+    x_min_index = 0
+    x_max_index = len(x) - 1
+    y_min_index = 0
+    y_max_index = len(y) - 1
+    for i in range(len(x) - 1):
+        if x[i] < x_min_mm and x_min_mm < x[i + 1]:
+            x_min_index = i + 1
+        elif x[i] < x_max_mm and x_max_mm < x[i + 1]:
+            x_max_index = i
+    for j in range(len(y) - 1):
+        if y[j] < y_min_mm and y_min_mm < y[j + 1]:
+            y_min_index = j + 1
+        elif y[j] < y_max_mm and y_max_mm < y[j + 1]:
+            y_max_index = j
+
+    return x_min_index, x_max_index, y_min_index, y_max_index
