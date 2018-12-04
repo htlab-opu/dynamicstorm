@@ -4,8 +4,7 @@
 
 from setuptools import setup, find_packages
 
-
-with open('README.rst') as f:
+with open('README.md') as f:
     readme = f.read()
 
 with open('LICENSE') as f:
@@ -18,10 +17,9 @@ setup(
     long_description=readme,
     author='Kenya Igarashi',
     author_email='kenyayanke223@gmail.com',
-    install_requires=['numpy','pandas','matplotlib','tkinter'],
+    install_requires=['numpy', 'pandas', 'matplotlib', 'tqdm'],
     url='https://github.com/fiftystorm36/dynamicstorm',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
     test_suite='tests'
 )
-
