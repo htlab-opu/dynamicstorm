@@ -1,0 +1,13 @@
+label_dict = {"x": {'label': 'x (mm)[mm]'},
+              "y": {'label': 'y (mm)[mm]'},
+              "N": {'label': 'N'},
+              "U": {'label': 'U[m/s]'},
+              "V": {'label': 'V[m/s]'},
+              "u": {'label': 'Std dev (U)[m/s]'},
+              "v": {'label': 'Std dev (V)[m/s]'},
+              "uv": {'label': 'Covar (U'},
+              "uuu": {'label': 'uuu'},
+              "vvv": {'label': 'vvv'},
+              "uuv": {'label': 'uuv'},
+              "uvv": {'label': 'uvv'},
+              }
