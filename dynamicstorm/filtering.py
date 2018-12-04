@@ -7,7 +7,6 @@ from tqdm import tqdm
 import multiprocessing as mp
 
 from . import model as dymod
-from . import statistics as dyst
 
 
 class Filter:
@@ -88,19 +87,12 @@ def parallel_task(args):
     end = int(file_count * (current_core + 1) / total_core) - 1
     header = dymod.InstantData.get_header_row(file_list[0])
     error_file_index_list = []
-    if current_core == 0:
-        text = 'filtering task ' + '1/' + str(total_core)
-        for i in tqdm(range(start, end), desc=text):
-            status = pd.read_csv(file_list[i], header=header)['Status']
-            if np.sum((status == 1) | (status == 17)) >= filter_value:
-                error_file_index_list.append(i)
-        print('Wait till other {} parallel tasks will have finished.'.format(total_core - 1))
-    else:
-        for i in range(start, end):
-            status = pd.read_csv(file_list[i], header=header)['Status']
-            if np.sum((status == 1) | (status == 17)) >= filter_value:
-                error_file_index_list.append(i)
+    text = 'filtering task ' + str(current_core + 1) + '/' + str(total_core)
+    for i in tqdm(range(start, end), desc=text):
+        status = pd.read_csv(file_list[i], header=header)['Status']
+        if np.sum((status == 1) | (status == 17)) >= filter_value:
+            error_file_index_list.append(i)
     return error_file_index_list
 
 
-fil = Filter()
+filtering = Filter()
