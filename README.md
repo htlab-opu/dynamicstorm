@@ -24,4 +24,4 @@ $ pip install git+https://github.com/fiftystorm36/dynamicstorm.git -U
 ```
 
 ## Sample
-[examples](/examples)
+[dynamicstorm_test.ipynb](https://gist.github.com/fiftystorm36/71a2977ea9fa959e672eb95697778cce)
