@@ -50,7 +50,7 @@ class ExptSet:
 class Statistics:
     """時間平均データ"""
 
-    def __init__(self, instant_data_list=None, source_dir=None):
+    def __init__(self, instant_data_list=None, source_file=None):
         self.time_averaged_data_frame = ''
         if instant_data_list is not None:
             self.time_averaging(instant_data_list)
