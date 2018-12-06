@@ -34,10 +34,12 @@ class ExptSet:
             sys.exit()
 
     def incorrect_vector_filter(self, filter_value):
-        self.instant_data_list = dyfil.Filter().filter_incorrect_vector(self.instant_data_list, filter_value)
+        self.instant_data_list = dyfil.Filter().filter_incorrect_vector(
+            self.instant_data_list, filter_value)
 
     def incorrect_vector_example(self, example_number):
-        dyfil.Filter().show_incorrect_vector_example(self.instant_data_list, example_number)
+        dyfil.Filter().show_incorrect_vector_example(
+            self.instant_data_list, example_number)
 
     def join(self, expt_set_list):
         """
@@ -54,8 +56,8 @@ class Statistics:
         self.time_averaged_data_frame = ''
         if instant_data_list is not None:
             self.time_averaging(instant_data_list)
-        elif source_dir is not None:
-            self.read(source_dir)
+        elif source_file is not None:
+            self.read(source_file)
 
     def time_averaging(self, file_list):
         """瞬時データを時間平均する"""
@@ -185,7 +187,8 @@ def time_averaging_parallel_task(args):
     start = int(file_count * current_core / total_core)
     end = int(file_count * (current_core + 1) / total_core) - 1
     header = InstantData.get_header_row(file_list[0])
-    text = 'time averaging task ' + str(current_core + 1) + '/' + str(total_core)
+    text = 'time averaging task ' + \
+           str(current_core + 1) + '/' + str(total_core)
 
     # 全て 0 の配列を用意
     df = pd.read_csv(file_list[0], header=header)
@@ -204,7 +207,7 @@ def time_averaging_parallel_task(args):
     for i in tqdm(range(start, end), desc=text):
         df = pd.read_csv(file_list[i], header=header)
         U_tmp = df[label_dict['U']['label']].values
-        V_tmp = df[label_dict['V']['label'].values
+        V_tmp = df[label_dict['V']['label']].values
         n = ((df[label_dict['Status']['label']] == 0) * 1).values
         N = N + n
         U = U + U_tmp
