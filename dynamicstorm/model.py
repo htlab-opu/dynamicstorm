@@ -189,7 +189,7 @@ def time_averaging_parallel_task(args):
 
     # 全て 0 の配列を用意
     df = pd.read_csv(file_list[0], header=header)
-    n = ((df['Status'] == 0) * 1).values
+    n = ((df[label_dict['Status']['label']] == 0) * 1).values
     N = n * 0
     U = N
     V = N
@@ -203,9 +203,9 @@ def time_averaging_parallel_task(args):
 
     for i in tqdm(range(start, end), desc=text):
         df = pd.read_csv(file_list[i], header=header)
-        U_tmp = df['U[m/s]'].values
-        V_tmp = df['V[m/s]'].values
-        n = ((df['Status'] == 0) * 1).values
+        U_tmp = df[label_dict['U']['label']].values
+        V_tmp = df[label_dict['V']['label'].values
+        n = ((df[label_dict['Status']['label']] == 0) * 1).values
         N = N + n
         U = U + U_tmp
         V = V + V_tmp
