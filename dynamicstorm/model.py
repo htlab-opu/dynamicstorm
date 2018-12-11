@@ -41,19 +41,22 @@ class ExptSet:
         dyfil.Filter().show_incorrect_vector_example(
             self.instant_data_list, example_number)
 
-    def join(self, expt_set_list):
+    def join(self, instant_data_list_list):
         """
         複数の実験データを結合してまとめて取り扱えるようにする
         """
-        for expt_set in expt_set_list:
-            self.instant_data_list.extend(expt_set.instant_data_list)
+        if type(instant_data_list_list[0]) is list:  # リストを一つだけ渡された場合
+            for instant_data_list in instant_data_list_list:
+                self.instant_data_list.extend(instant_data_list)
+        else:  # リストを複数渡された場合
+            self.instant_data_list.extend(instant_data_list_list)
 
 
 class Statistics:
     """時間平均データ"""
 
     def __init__(self, instant_data_list=None, source_file=None):
-        self.time_averaged_data_frame = ''
+        self.time_averaged_data_frame = None
         if instant_data_list is not None:
             self.time_averaging(instant_data_list)
         elif source_file is not None:
@@ -166,8 +169,80 @@ class Statistics:
         header = self.get_header_row(file_name)
         self.time_averaged_data_frame = pd.read_csv(file_name, header=header)
 
-    def join(self, statistics):
-        pass
+    def join(self, time_averaged_data_frame_list):
+        """複数実験セットのデータを統合する"""
+        np.seterr(all='ignore')
+        if self.time_averaged_data_frame is None:  # オブジェクトが空の場合
+            if type(time_averaged_data_frame_list) is list:  # 複数のデータフレームを渡された場合
+                self.time_averaged_data_frame = time_averaged_data_frame_list[0]  # 最初のループの処理
+                for i, time_averaged_data_frame in enumerate(time_averaged_data_frame_list):
+                    if i == 0: continue  # 最初のループ分の処理をスキップ
+                    df1 = self.time_averaged_data_frame
+                    N1 = df1[label_dict['N']['label']].values
+                    df2 = time_averaged_data_frame
+                    N2 = df2[label_dict['N']['label']].values
+                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                        a1 = df1[label_dict[text]['label']].values
+                        a2 = df2[label_dict[text]['label']].values
+                        data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.time_averaged_data_frame[label_dict[text]['label']] = data
+                    for text in ['u', 'v']:
+                        a1 = df1[label_dict[text]['label']].values
+                        a2 = df2[label_dict[text]['label']].values
+                        data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.time_averaged_data_frame[label_dict[text]['label']] = data
+                    self.time_averaged_data_frame[label_dict['N']['label']] = N1 + N2
+
+            else:  # データフレームを一つだけ渡された場合
+                time_averaged_data_frame = time_averaged_data_frame_list
+                self.time_averaged_data_frame = time_averaged_data_frame
+
+        else:
+            if type(time_averaged_data_frame_list) is list:
+                for time_averaged_data_frame in time_averaged_data_frame_list:
+                    df1 = self.time_averaged_data_frame
+                    N1 = df1[label_dict['N']['label']].values
+                    df2 = time_averaged_data_frame
+                    N2 = df2[label_dict['N']['label']].values
+                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                        a1 = df1[label_dict[text]['label']].values
+                        a2 = df2[label_dict[text]['label']].values
+                        data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.time_averaged_data_frame[label_dict[text]['label']] = data
+                    for text in ['u', 'v']:
+                        a1 = df1[label_dict[text]['label']].values
+                        a2 = df2[label_dict[text]['label']].values
+                        data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.time_averaged_data_frame[label_dict[text]['label']] = data
+                    self.time_averaged_data_frame[label_dict['N']['label']] = N1 + N2
+            else:
+                df1 = self.time_averaged_data_frame
+                N1 = df1[label_dict['N']['label']].values
+                df2 = time_averaged_data_frame_list
+                N2 = df2[label_dict['N']['label']].values
+                for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                    a1 = df1[label_dict[text]['label']].values
+                    a2 = df2[label_dict[text]['label']].values
+                    data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                    data[np.isnan(data)] = 0
+                    data[np.isinf(data)] = 0
+                    self.time_averaged_data_frame[label_dict[text]['label']] = data
+                for text in ['u', 'v']:
+                    a1 = df1[label_dict[text]['label']].values
+                    a2 = df2[label_dict[text]['label']].values
+                    data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
+                    data[np.isnan(data)] = 0
+                    data[np.isinf(data)] = 0
+                    self.time_averaged_data_frame[label_dict[text]['label']] = data
+                self.time_averaged_data_frame[label_dict['N']['label']] = N1 + N2
 
     @staticmethod
     def get_header_row(file_name):
@@ -226,7 +301,7 @@ class SpaceAverage:
     """時間平均かつ空間平均データ"""
 
     def __init__(self, data_frame=None, source_file=None, grid_shape=[74, 101], crop_range=['', '', '', '']):
-        self.space_averaged_data_frame = ''
+        self.space_averaged_data_frame = None
         self.grid_shape = grid_shape
         self.crop_range = []
         self.set_range(crop_range)
@@ -352,13 +427,85 @@ class SpaceAverage:
         """データのヘッダ行数を取得する"""
         file = open(file, 'r')
         for i, line in enumerate(file):
-            if line[0] == 'x':
+            if line[0] == 'y':
                 file.close()
                 return i
         file.close()
 
-    def join(self):
-        pass
+    def join(self, space_averaged_data_frame_list):
+        """複数実験セットのデータを統合する"""
+        np.seterr(all='ignore')
+        if self.space_averaged_data_frame is None: # 空のオブジェクトの場合
+            if type(space_averaged_data_frame_list) is list:  # 複数 set のデータ
+                self.space_averaged_data_frame = space_averaged_data_frame_list[0]
+                for i, space_averaged_data_frame in enumerate(space_averaged_data_frame_list):
+                    if i == 0: continue
+                    df1 = self.space_averaged_data_frame
+                    N1 = df1['N'].values
+                    df2 = space_averaged_data_frame
+                    N2 = df2['N'].values
+                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                        a1 = df1[text].values
+                        a2 = df2[text].values
+                        data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.space_averaged_data_frame[text] = data
+                    for text in ['u', 'v']:
+                        a1 = df1[text].values
+                        a2 = df2[text].values
+                        data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.space_averaged_data_frame[text] = data
+                self.space_averaged_data_frame['N'] = N1 + N2
+            else:  # 1 set のデータのみ
+                space_averaged_data_frame = space_averaged_data_frame_list
+                self.space_averaged_data_frame = space_averaged_data_frame
+
+        else:
+            if type(space_averaged_data_frame_list) is list:  # 複数 set のデータ
+                for space_averaged_data_frame in space_averaged_data_frame_list:
+                    df1 = self.space_averaged_data_frame
+                    N1 = df1['N'].values
+                    df2 = space_averaged_data_frame
+                    N2 = df2['N'].values
+                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                        a1 = df1[text].values
+                        a2 = df2[text].values
+                        data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.space_averaged_data_frame[text] = data
+                    for text in ['u', 'v']:
+                        a1 = df1[text].values
+                        a2 = df2[text].values
+                        data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.space_averaged_data_frame[text] = data
+                self.space_averaged_data_frame['N'] = N1 + N2
+            else:  # 1 set のデータのみ
+                space_averaged_data_frame = space_averaged_data_frame_list
+                df1 = self.space_averaged_data_frame
+                N1 = df1['N'].values
+                df2 = space_averaged_data_frame
+                N2 = df2['N'].values
+                for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                    a1 = df1[text].values
+                    a2 = df2[text].values
+                    data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                    data[np.isnan(data)] = 0
+                    data[np.isinf(data)] = 0
+                    self.space_averaged_data_frame[text] = data
+                for text in ['u', 'v']:
+                    a1 = df1[text].values
+                    a2 = df2[text].values
+                    data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
+                    data[np.isnan(data)] = 0
+                    data[np.isinf(data)] = 0
+                    self.space_averaged_data_frame[text] = data
+                self.space_averaged_data_frame['N'] = N1 + N2
 
 
 class InstantData:

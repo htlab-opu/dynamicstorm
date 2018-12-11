@@ -1,5 +1,5 @@
 # DynamicStorm
-This module is for the vector file which is output from DynamicStudio.
+This python module is for the vector file which is output from DynamicStudio.
 
 Functions:
 
@@ -24,4 +24,5 @@ $ pip install git+https://github.com/fiftystorm36/dynamicstorm.git -U
 ```
 
 ## Sample
-[dynamicstorm_test.ipynb](https://gist.github.com/fiftystorm36/71a2977ea9fa959e672eb95697778cce)
+- [Single set data analysis](https://gist.github.com/fiftystorm36/71a2977ea9fa959e672eb95697778cce)
+- [Several set data analysis](https://gist.github.com/fiftystorm36/45adbd91fd327ba65cc1b34e6dd76c1b)
