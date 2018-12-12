@@ -285,8 +285,8 @@ def time_averaging_parallel_task(args):
         V_tmp = df[label_dict['V']['label']].values
         n = ((df[label_dict['Status']['label']] == 0) * 1).values
         N = N + n
-        U = U + U_tmp
-        V = V + V_tmp
+        U = U + U_tmp * n
+        V = V + V_tmp * n
         uu = uu + U_tmp ** 2 * n
         vv = vv + V_tmp ** 2 * n
         uv = uv + U_tmp * V_tmp * n
