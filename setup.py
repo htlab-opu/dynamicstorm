@@ -17,7 +17,7 @@ setup(
     long_description=readme,
     author='Kenya Igarashi',
     author_email='kenyayanke223@gmail.com',
-    install_requires=['numpy', 'pandas', 'matplotlib', 'tqdm'],
+    install_requires=['numpy', 'pandas', 'scipy', 'matplotlib', 'tqdm'],
     url='https://github.com/fiftystorm36/dynamicstorm',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
