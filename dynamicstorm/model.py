@@ -2,6 +2,7 @@ import pandas as pd
 import glob
 import sys
 import numpy as np
+from scipy import interpolate
 import multiprocessing as mp
 from tqdm import tqdm
 
@@ -300,7 +301,7 @@ def time_averaging_parallel_task(args):
 class SpaceAverage:
     """時間平均かつ空間平均データ"""
 
-    def __init__(self, data_frame=None, source_file=None, grid_shape=[74, 101], crop_range=['', '', '', '']):
+    def __init__(self, data_frame=None, source_file=None, grid_shape=[74, 101], crop_range=['', '', '', ''], size=80):
         self.space_averaged_data_frame = None
         self.grid_shape = grid_shape
         self.crop_range = []
@@ -308,7 +309,7 @@ class SpaceAverage:
         if source_file is not None:
             self.read(source_file)
         elif data_frame is not None:
-            self.space_averaging(data_frame)
+            self.space_averaging(data_frame, size)
 
     def save(self, file_name):
         """空間平均済みデータを保存する"""
@@ -332,7 +333,7 @@ class SpaceAverage:
         y_max_mm = float(y_max_mm)
         self.crop_range = x_min_mm, x_max_mm, y_min_mm, y_max_mm
 
-    def space_averaging(self, time_averaged_data_frame):
+    def space_averaging(self, time_averaged_data_frame, size):
         df = time_averaged_data_frame
         x = df[label_dict['x']['label']].values.reshape(self.grid_shape)[0, :]
         y = df[label_dict['y']['label']].values.reshape(self.grid_shape)[:, 0]
@@ -388,6 +389,7 @@ class SpaceAverage:
         uuv = uuv_tmp / N
         uvv = uvv_tmp / N
 
+        # 0 で割った部分の対処
         U[np.isnan(U)] = 0
         V[np.isnan(V)] = 0
         u[np.isnan(u)] = 0
@@ -397,7 +399,6 @@ class SpaceAverage:
         vvv[np.isnan(vvv)] = 0
         uuv[np.isnan(uuv)] = 0
         uvv[np.isnan(uvv)] = 0
-
         U[np.isinf(U)] = 0
         V[np.isinf(V)] = 0
         u[np.isinf(u)] = 0
@@ -408,8 +409,31 @@ class SpaceAverage:
         uuv[np.isinf(uuv)] = 0
         uvv[np.isinf(uvv)] = 0
 
+        # サイズを標準化
+        y_size = np.linspace(0, size, size + 1)
+        fU = interpolate.interp1d(y, U)
+        U = fU(y_size)
+        fV = interpolate.interp1d(y, V)
+        V = fV(y_size)
+        fu = interpolate.interp1d(y, u)
+        u = fu(y_size)
+        fv = interpolate.interp1d(y, v)
+        v = fv(y_size)
+        fuv = interpolate.interp1d(y, uv)
+        uv = fuv(y_size)
+        fuuu = interpolate.interp1d(y, uuu)
+        uuu = fuuu(y_size)
+        fvvv = interpolate.interp1d(y, vvv)
+        vvv = fvvv(y_size)
+        fuuv = interpolate.interp1d(y, uuv)
+        uuv = fuuv(y_size)
+        fuvv = interpolate.interp1d(y, uvv)
+        uvv = fuvv(y_size)
+        fN = interpolate.interp1d(y, N)
+        N = fN(y_size)
+
         self.space_averaged_data_frame = pd.DataFrame({
-            'y': y,
+            'y': y_size,
             'U': U,
             'V': V,
             'u': u,
@@ -435,7 +459,7 @@ class SpaceAverage:
     def join(self, space_averaged_data_frame_list):
         """複数実験セットのデータを統合する"""
         np.seterr(all='ignore')
-        if self.space_averaged_data_frame is None: # 空のオブジェクトの場合
+        if self.space_averaged_data_frame is None:  # 空のオブジェクトの場合
             if type(space_averaged_data_frame_list) is list:  # 複数 set のデータ
                 self.space_averaged_data_frame = space_averaged_data_frame_list[0]
                 for i, space_averaged_data_frame in enumerate(space_averaged_data_frame_list):
