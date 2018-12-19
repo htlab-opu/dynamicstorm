@@ -8,20 +8,10 @@ Functions:
 - space averaging
 
 ## Getting Start
-### Installation
+- [Setup](docs/setup.md)
 
-Execute following command in terminal.
-
-```
-$ pip install git+https://github.com/fiftystorm36/dynamicstorm.git
-```
-
-Git command is required. Use GitBash if you use the Windows operating system, for example.
-
-### How to upgrade
-```
-$ pip install git+https://github.com/fiftystorm36/dynamicstorm.git -U
-```
+## Manual
+- [Manual](docs/manual.md)
 
 ## Sample
 - [Single set data analysis](https://gist.github.com/fiftystorm36/71a2977ea9fa959e672eb95697778cce)
