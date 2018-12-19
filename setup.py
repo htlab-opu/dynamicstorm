@@ -13,8 +13,9 @@ with open('LICENSE') as f:
 setup(
     name='dynamicstorm',
     version='0.1.1',
-    description='manipulate data which output from DynamicStudio',
-    long_description=readme,
+    description='Process manipulate data which output from DynamicStudio.',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     author='Kenya Igarashi',
     author_email='kenyayanke223@gmail.com',
     install_requires=['numpy', 'pandas', 'scipy', 'matplotlib', 'tqdm'],
