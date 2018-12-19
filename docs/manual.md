@@ -176,7 +176,7 @@ space3.space_averaged_data_frame # 表示
 
 ## Others
 - label_dict
-    - DynamicStudio から読み出すデータのラベルを管理する dict．デフォルトと異なる場合はこの dict を変更した上でファイルの読み書きを行う．
+    - DynamicStudio の出力ファイルからデータを読み出す際や，計算済みのデータをファイルに保存する際のテーブルのラベルを管理する dict．デフォルトと異なる場合はこの dict を変更した上でファイルの読み書きを行う．
     - デフォルトラベル:
         - x: x (mm)[mm]
         - y: y (mm)[mm]
