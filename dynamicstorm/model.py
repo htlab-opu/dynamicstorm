@@ -114,13 +114,18 @@ class Statistics:
         cuu = uu
         cvv = vv
         cuv = uv
-        uu = np.sqrt(uu - U ** 2)
-        vv = np.sqrt(vv - V ** 2)
-        uv = uv - U * V
-        uuu = uuu - 3 * U * cuu + 2 * U ** 3
-        vvv = vvv - 3 * U * cvv + 2 * V ** 3
-        uuv = uuv - V * cuu - 2 * U * cuv + 2 * U ** 2 * V
-        uvv = uvv - U * cvv - 2 * V * cuv + 2 * U * V ** 2
+        cuuu = uuu
+        cvvv = vvv
+        cuuv = uuv
+        cuvv = uvv
+
+        uu = np.sqrt(cuu - U ** 2)
+        vv = np.sqrt(cvv - V ** 2)
+        uv = cuv - U * V
+        uuu = cuuu - 3 * U * cuu + 2 * U ** 3
+        vvv = cvvv - 3 * V * cvv + 2 * V ** 3
+        uuv = cuuv - V * cuu - 2 * U * cuv + 2 * U ** 2 * V
+        uvv = cuvv - U * cvv - 2 * V * cuv + 2 * U * V ** 2
 
         U[np.isnan(U)] = 0
         V[np.isnan(V)] = 0
