@@ -18,7 +18,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Kenya Igarashi',
     author_email='kenyayanke223@gmail.com',
-    install_requires=['numpy', 'pandas', 'scipy', 'matplotlib', 'tqdm'],
+    install_requires=['numpy', 'pandas', 'scipy', 'matplotlib', 'tqdm', 'opencv-python'],
     url='https://github.com/fiftystorm36/dynamicstorm',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),

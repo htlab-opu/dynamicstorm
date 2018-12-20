@@ -3,6 +3,7 @@ import glob
 import sys
 import numpy as np
 from scipy import interpolate
+import cv2
 import multiprocessing as mp
 from tqdm import tqdm
 
@@ -58,10 +59,56 @@ class Statistics:
 
     def __init__(self, instant_data_list=None, source_file=None):
         self.time_averaged_data_frame = None
+        self.array_2d = None
         if instant_data_list is not None:
             self.time_averaging(instant_data_list)
         elif source_file is not None:
             self.read(source_file)
+
+    def crop_array_2d(self, grid_shape=[74, 101], crop_range=['', '', '', ''], size=[80, 80]):
+        size = (size[0], size[1])
+        df = self.time_averaged_data_frame
+        x_min_index, x_max_index, y_min_index, y_max_index = get_crop_index(df,
+                                                                            grid_shape,
+                                                                            crop_range)
+        U = cv2.resize(df[label_dict['U']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        V = cv2.resize(df[label_dict['V']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        u = cv2.resize(df[label_dict['u']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        v = cv2.resize(df[label_dict['v']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        uv = cv2.resize(df[label_dict['uv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                        x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        uuu = cv2.resize(df[label_dict['uuu']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        vvv = cv2.resize(df[label_dict['vvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        uuv = cv2.resize(df[label_dict['uuv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        uvv = cv2.resize(df[label_dict['uvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+
+        x = np.linspace(0, 1, size[0])
+        y = np.linspace(0, 1, size[1])
+        x, y = np.meshgrid(x, y)
+        N = cv2.resize(df[label_dict['N']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_NEAREST)
+        self.array_2d = {
+            'x': x,
+            'y': y,
+            'U': U,
+            'V': V,
+            'u': u,
+            'v': v,
+            'uv': uv,
+            'uuu': uuu,
+            'vvv': vvv,
+            'uuv': uuv,
+            'uvv': uvv,
+            'N': N,
+        }
 
     def time_averaging(self, file_list):
         """瞬時データを時間平均する"""
@@ -306,7 +353,8 @@ def time_averaging_parallel_task(args):
 class SpaceAverage:
     """時間平均かつ空間平均データ"""
 
-    def __init__(self, data_frame=None, source_file=None, grid_shape=[74, 101], crop_range=['', '', '', ''], size=80):
+    def __init__(self, data_frame=None, source_file=None,
+                 grid_shape=[74, 101], crop_range=['', '', '', ''], size=80):
         self.space_averaged_data_frame = None
         self.grid_shape = grid_shape
         self.crop_range = []
