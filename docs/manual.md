@@ -5,6 +5,8 @@
 - [SpaceAverage](#SpaceAverage)
 - [Others](#Others)
 
+![processing flow](flow.jpg)
+
 ## ExptSet
 DynamicStudio から出力した瞬時データの集合．実際にはオブジェクト生成時に指定したディレクトリ内の瞬時データのファイル名のリストを取り扱っている．誤ベクトル数が特に多いデータを除外することができる．
 
