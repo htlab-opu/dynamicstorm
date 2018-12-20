@@ -71,12 +71,21 @@ stat = ds.model.Statistics(source_file='directory/filename')
         - uuv 
         - uvv 
         - N: 統計に用いたデータの内，誤ベクトルでなかったデータの数
+- array_2d
+    - 2 次元配列の dict．各値は ndarray（numpy 配列）形式．
 
 ### Methods
 - save(filename)
     - 統計したデータを `filename` という名前のファイルに csv 形式で保存する
 - join(time_averaged_data_frame)
     - 時間平均データを統合する
+- crop_array_2d(grid_shape, crop_range, size)
+    - 計測領域をクロップして 2 次元配列を取り出す．
+    - 引数:
+        - grid_shape: PIV の際の Interrogation Window のグリッド数 `[y_grid, x_grid]`
+        - crop_range: クロップする範囲の x, y 座標 (mm) `[x_min, x_max, y_min, y_max]`
+        - 取り出す 2 次元配列のサイズ `[x_grid, y_grid]`
+    
 
 ### Example
 ```python
@@ -96,6 +105,14 @@ stat3.join([stat1.time_averaged_data_frame, stat2.time_averaged_data_frame])
 stat3.save('directory/time_averaged_file03.csv')
 
 stat3.time_averaged_data_frame # 表示
+
+# 2 次元配列として取得
+grid_shape = [74, 101]
+crop_range = [1.25, 51.25, 14.88, 64.88] # [x_min, x_max, y_min, y_max]
+size = [80, 80]
+stat3.crop_array_2d(grid_shape=grid_shape, crop_range=crop_range, size=size)
+
+stat3.array_2d # 表示
 ```
 
 ## SpaceAverage
