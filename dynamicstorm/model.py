@@ -309,9 +309,9 @@ class Array2d:
     """時間平均データの必要な部分だけ取り出した 2 次元配列データ"""
 
     def __init__(self, data_frame=None, grid_shape=[74, 101], crop_range=['', '', '', ''], size=[80, 80]):
-        self.array_2d_dict == None
-        if time_averaged_data_frame is not None:
-            self.crop_array_2d(time_averaged_data_frame, grid_shape, crop_range, size)
+        self.array_2d_dict = None
+        if data_frame is not None:
+            self.crop_array_2d(data_frame, grid_shape, crop_range, size)
 
     def crop_array_2d(self, time_averaged_data_frame, grid_shape=[74, 101], crop_range=['', '', '', ''], size=[80, 80]):
         size = (size[0], size[1])
