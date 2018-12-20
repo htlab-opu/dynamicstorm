@@ -1,6 +1,7 @@
 # Manual
 - [ExptSet](#ExptSet)
 - [Statistics](#Statistics)
+- [Array2d](#Array2d)
 - [SpaceAverage](#SpaceAverage)
 - [Others](#Others)
 
@@ -71,21 +72,13 @@ stat = ds.model.Statistics(source_file='directory/filename')
         - uuv 
         - uvv 
         - N: 統計に用いたデータの内，誤ベクトルでなかったデータの数
-- array_2d
-    - 2 次元配列の dict．各値は ndarray（numpy 配列）形式．
 
 ### Methods
 - save(filename)
     - 統計したデータを `filename` という名前のファイルに csv 形式で保存する
-- join(time_averaged_data_frame)
+- join(time_averaged_data_frame or time_averaged_data_frame_list)
     - 時間平均データを統合する
-- crop_array_2d(grid_shape, crop_range, size)
-    - 計測領域をクロップして 2 次元配列を取り出す．
-    - 引数:
-        - grid_shape: PIV の際の Interrogation Window のグリッド数 `[y_grid, x_grid]`
-        - crop_range: クロップする範囲の x, y 座標 (mm) `[x_min, x_max, y_min, y_max]`
-        - 取り出す 2 次元配列のサイズ `[x_grid, y_grid]`
-    
+    - 計測領域の座標に依らず統計を行ってしまうため，同じ領域を計測したデータの統合のみに利用すること
 
 ### Example
 ```python
@@ -105,14 +98,80 @@ stat3.join([stat1.time_averaged_data_frame, stat2.time_averaged_data_frame])
 stat3.save('directory/time_averaged_file03.csv')
 
 stat3.time_averaged_data_frame # 表示
+```
+## Array2d
+時間平均済みデータから必要な範囲のみ取り出したデータを 2 次元配列にしたもの．
+
+### Instantiate
+```python
+array = ds.model.Array2d(
+            data_frame=time_averaged_data_frame,
+            grid_shape=grid_shape,
+            crop_range=crop_range,
+            size=size)
+```
+- `data_frame`: pandas dataframe 形式の時間平均済みデータ
+- `grid_shape`: PIV 時の Interrogation Window のグリッドサイズのリスト
+    - `[y 方向のグリッドサイズ, x 方向のグリッドサイズ]`
+- `crop_range`: クロップする流れ場の範囲の座標を表すリスト (mm)
+    - `[x_min, x_max, y_min, y_max]`
+    - 値の代わりに `''` を挿入するとその部分はクロップされない
+        - 例: `['', '', y_min, y_max]`
+- `size`: 取得する 2 次元配列の解像度
+    - `[x_grid, y_grid]`
+
+### Fields
+- array_2d_dict
+    - 2 次元配列が含まれる dict．
+    - 含まれるデータ:
+        - x: x 座標
+        - y: y 座標
+        - U: x 方向平均速度
+        - V: y 方向平均速度
+        - u_rms: x 方向変動速度の二乗平均平方根 (root mean square)
+        - v_rms: y 方向変動速度の二乗平均平方根 (root mean square)
+        - uv: レイノルズ応力
+        - uuu 
+        - vvv 
+        - uuv 
+        - uvv 
+        - N: 統計に用いたデータの内，誤ベクトルでなかったデータの数
+        
+### Methods
+- join(array_2d_dict or array_2d_dict_list)
+    - 別々のデータを統合する
+
+### Example
+```python
+# モジュールインポート
+import dynamicstorm as ds 
+import matplotlib.pyplot as plt
+
+# 時間平均データを取得
+stat1 = ds.model.Statistics(source_file='directory/time_averaged_file01.csv')
+stat2 = ds.model.Statistics(source_file='directory/time_averaged_file02.csv')
 
 # 2 次元配列として取得
 grid_shape = [74, 101]
-crop_range = [1.25, 51.25, 14.88, 64.88] # [x_min, x_max, y_min, y_max]
+crop_range1 = [1.25, 51.25, 14.88, 64.88] # [x_min, x_max, y_min, y_max]
+crop_range2 = [0.33, 50.33, 20.03, 70.03]
 size = [80, 80]
-stat3.crop_array_2d(grid_shape=grid_shape, crop_range=crop_range, size=size)
+dict1 = ds.model.Array2d(data_frame=stat1.time_averaged_data_frame,
+                          grid_shape=grid_shape,
+                          crop_range=crop_range1,
+                          size=size)
+dict2 = ds.model.Array2d(data_frame=stat2.time_averaged_data_frame,
+                          grid_shape=grid_shape,
+                          crop_range=crop_range2,
+                          size=size)
 
-stat3.array_2d # 表示
+# 2 つのデータを統計
+dict3 = ds.model.Array2d()
+dict3.join([dict1.array_2d_dict, dict2.array_2d_dict])
+
+# U の描画
+plt.imshow(dict3.array_2d_dict['U'])
+plt.show()
 ```
 
 ## SpaceAverage

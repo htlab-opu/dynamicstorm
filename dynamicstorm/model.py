@@ -65,51 +65,6 @@ class Statistics:
         elif source_file is not None:
             self.read(source_file)
 
-    def crop_array_2d(self, grid_shape=[74, 101], crop_range=['', '', '', ''], size=[80, 80]):
-        size = (size[0], size[1])
-        df = self.time_averaged_data_frame
-        x_min_index, x_max_index, y_min_index, y_max_index = get_crop_index(df,
-                                                                            grid_shape,
-                                                                            crop_range)
-        U = cv2.resize(df[label_dict['U']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        V = cv2.resize(df[label_dict['V']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        u = cv2.resize(df[label_dict['u']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        v = cv2.resize(df[label_dict['v']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        uv = cv2.resize(df[label_dict['uv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                        x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        uuu = cv2.resize(df[label_dict['uuu']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        vvv = cv2.resize(df[label_dict['vvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        uuv = cv2.resize(df[label_dict['uuv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        uvv = cv2.resize(df[label_dict['uvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-
-        x = np.linspace(0, 1, size[0])
-        y = np.linspace(0, 1, size[1])
-        x, y = np.meshgrid(x, y)
-        N = cv2.resize(df[label_dict['N']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_NEAREST)
-        self.array_2d = {
-            'x': x,
-            'y': y,
-            'U': U,
-            'V': V,
-            'u': u,
-            'v': v,
-            'uv': uv,
-            'uuu': uuu,
-            'vvv': vvv,
-            'uuv': uuv,
-            'uvv': uvv,
-            'N': N,
-        }
-
     def time_averaging(self, file_list):
         """瞬時データを時間平均する"""
         # 並列計算
@@ -348,6 +303,133 @@ def time_averaging_parallel_task(args):
         uuv = uuv + U_tmp ** 2 * V_tmp * n
         uvv = uvv + U_tmp * V_tmp ** 2 * n
     return U, V, uu, vv, uv, uuu, vvv, uuv, uvv, N
+
+
+class Array2d:
+    """時間平均データの必要な部分だけ取り出した 2 次元配列データ"""
+
+    def __init__(self, data_frame=None, grid_shape=[74, 101], crop_range=['', '', '', ''], size=[80, 80]):
+        self.array_2d_dict == None
+        if time_averaged_data_frame is not None:
+            self.crop_array_2d(time_averaged_data_frame, grid_shape, crop_range, size)
+
+    def crop_array_2d(self, time_averaged_data_frame, grid_shape=[74, 101], crop_range=['', '', '', ''], size=[80, 80]):
+        size = (size[0], size[1])
+        df = time_averaged_data_frame
+        x_min_index, x_max_index, y_min_index, y_max_index = get_crop_index(df,
+                                                                            grid_shape,
+                                                                            crop_range)
+        U = cv2.resize(df[label_dict['U']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        V = cv2.resize(df[label_dict['V']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        u = cv2.resize(df[label_dict['u']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        v = cv2.resize(df[label_dict['v']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        uv = cv2.resize(df[label_dict['uv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                        x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        uuu = cv2.resize(df[label_dict['uuu']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        vvv = cv2.resize(df[label_dict['vvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        uuv = cv2.resize(df[label_dict['uuv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        uvv = cv2.resize(df[label_dict['uvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+
+        x = np.linspace(0, 1, size[0])
+        y = np.linspace(0, 1, size[1])
+        x, y = np.meshgrid(x, y)
+        N = cv2.resize(df[label_dict['N']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                       x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_NEAREST)
+        self.array_2d_dict = {
+            'x': x,
+            'y': y,
+            'U': U,
+            'V': V,
+            'u': u,
+            'v': v,
+            'uv': uv,
+            'uuu': uuu,
+            'vvv': vvv,
+            'uuv': uuv,
+            'uvv': uvv,
+            'N': N,
+        }
+
+    def join(self, array_2d_dict_list):
+        np.seterr(all='ignore')
+        if self.array_2d_dict is None:  # オブジェクトが空の場合
+            if type(array_2d_dict_list) is list:  # 複数のデータフレームを渡された場合
+                self.array_2d_dict = array_2d_dict_list[0]  # 最初のループの処理
+                for i, array_2d_dict in enumerate(array_2d_dict_list):
+                    if i == 0: continue  # 最初のループ分の処理をスキップ
+                    array_2d_dict1 = self.array_2d_dict
+                    N1 = array_2d_dict1['N']
+                    array_2d_dict2 = array_2d_dict
+                    N2 = array_2d_dict2['N']
+                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                        a1 = array_2d_dict1[text]
+                        a2 = array_2d_dict2[text]
+                        data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.array_2d_dict[text] = data
+                    for text in ['u', 'v']:
+                        a1 = array_2d_dict1[text]
+                        a2 = array_2d_dict2[text]
+                        data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.array_2d_dict = data
+                    self.array_2d_dict['N'] = N1 + N2
+
+            else:  # データフレームを一つだけ渡された場合
+                self.array_2d_dict = array_2d_dict_list
+
+        else:  # オブジェクトが既に存在する場合
+            if type(array_2d_dict_list) is list: # 複数のデータを渡された場合
+                for array_2d_dict in array_2d_dict_list:
+                    array_2d_dict1 = self.array_2d_dict
+                    N1 = array_2d_dict1['N']
+                    array_2d_dict2 = array_2d_dict
+                    N2 = array_2d_dict2['N']
+                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                        a1 = array_2d_dict1[text]
+                        a2 = array_2d_dict2[text]
+                        data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.array_2d_dict[text] = data
+                    for text in ['u', 'v']:
+                        a1 = array_2d_dict1[text]
+                        a2 = array_2d_dict2[text]
+                        data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.array_2d_dict = data
+                    self.array_2d_dict['N'] = N1 + N2
+            else:
+                array_2d_dict1 = self.array_2d_dict
+                N1 = array_2d_dict1['N']
+                array_2d_dict2 = array_2d_dict_list
+                N2 = array_2d_dict2['N']
+                for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                    a1 = array_2d_dict1[text]
+                    a2 = array_2d_dict2[text]
+                    data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                    data[np.isnan(data)] = 0
+                    data[np.isinf(data)] = 0
+                    self.array_2d_dict[text] = data
+                for text in ['u', 'v']:
+                    a1 = array_2d_dict1[text]
+                    a2 = array_2d_dict2[text]
+                    data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
+                    data[np.isnan(data)] = 0
+                    data[np.isinf(data)] = 0
+                    self.array_2d_dict = data
+                self.array_2d_dict['N'] = N1 + N2
 
 
 class SpaceAverage:
