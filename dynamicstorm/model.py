@@ -382,7 +382,7 @@ class Array2d:
                         data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
-                        self.array_2d_dict = data
+                        self.array_2d_dict[text] = data
                     self.array_2d_dict['N'] = N1 + N2
 
             else:  # データフレームを一つだけ渡された場合
@@ -408,7 +408,7 @@ class Array2d:
                         data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
-                        self.array_2d_dict = data
+                        self.array_2d_dict[text] = data
                     self.array_2d_dict['N'] = N1 + N2
             else:
                 array_2d_dict1 = self.array_2d_dict
@@ -428,7 +428,7 @@ class Array2d:
                     data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
                     data[np.isnan(data)] = 0
                     data[np.isinf(data)] = 0
-                    self.array_2d_dict = data
+                    self.array_2d_dict[text] = data
                 self.array_2d_dict['N'] = N1 + N2
 
 
