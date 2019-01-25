@@ -39,9 +39,15 @@ class ExptSet:
         self.instant_data_list = dyfil.Filter().filter_incorrect_vector(
             self.instant_data_list, filter_value)
 
-    def incorrect_vector_example(self, example_number):
+    def get_incorrect_vector_example(self, example_number):
+        return dyfil.Filter().get_incorrect_vector_example(
+            self.instant_data_list, example_number
+        )
+
+    def show_incorrect_vector_example(self, example_number):
         dyfil.Filter().show_incorrect_vector_example(
-            self.instant_data_list, example_number)
+            self.instant_data_list, example_number
+        )
 
     def join(self, instant_data_list_list):
         """
@@ -389,7 +395,7 @@ class Array2d:
                 self.array_2d_dict = array_2d_dict_list
 
         else:  # オブジェクトが既に存在する場合
-            if type(array_2d_dict_list) is list: # 複数のデータを渡された場合
+            if type(array_2d_dict_list) is list:  # 複数のデータを渡された場合
                 for array_2d_dict in array_2d_dict_list:
                     array_2d_dict1 = self.array_2d_dict
                     N1 = array_2d_dict1['N']

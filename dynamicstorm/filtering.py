@@ -13,8 +13,30 @@ class Filter:
     """誤ベクトル数の確認，誤ベクトル数によるフィルタリング処理"""
 
     @classmethod
+    def get_incorrect_vector_example(cls, file_list, example_number):
+        """含まれる瞬時データの内指定した個数のデータがそれぞれ持つ誤ベクトル数"""
+        incorrect_vector_list = []
+        try:
+            file_list = file_list[0:example_number]
+        except:
+            pass
+        for i, file in enumerate(tqdm(file_list)):
+            total_incorrect_vector = cls.get_total_incorrect_vector(file)
+            incorrect_vector_list.append(total_incorrect_vector)
+        return incorrect_vector_list
+
+    @classmethod
+    def get_incorrect_vector_all(cls, file_list):
+        """含まれる瞬時データ全てがそれぞれ持つ誤ベクトル数を表示する"""
+        incorrect_vector_list = []
+        for i, file in enumerate(tqdm(file_list)):
+            total_incorrect_vector = cls.get_total_incorrect_vector(file)
+            incorrect_vector_list.append(total_incorrect_vector)
+        return incorrect_vector_list
+
+    @classmethod
     def show_incorrect_vector_example(cls, file_list, example_number):
-        """含まれる瞬時データの内100個がそれぞれ持つ誤ベクトル数を表示する"""
+        """含まれる瞬時データの内指定した個数のデータがそれぞれ持つ誤ベクトル数を表示する"""
         incorrect_vector_list = []
         try:
             file_list = file_list[0:example_number]

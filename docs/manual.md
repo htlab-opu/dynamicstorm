@@ -23,8 +23,10 @@ expt = ds.model.ExptSet('directory')
 ### Methods
 - incorrect_vector_filter(filter_value)
     - `filter_value` よりも誤ベクトル数が多い瞬時データのファイル名を `instant_data_list` から除外する
-- incorrect_vector_example(example_number)
+- show_incorrect_vector_example(example_number)
     - `instant_data_list` に含まれる瞬時データのファイル名の最初から `example_number` で指定した数の瞬時データに含まれる誤ベクトル数を表示する
+- get_incorrect_vector_example(example_number)
+    - `instant_data_list` に含まれる瞬時データのファイル名の最初から `example_number` で指定した数の瞬時データに含まれる誤ベクトル数のリストを取得する
 - join(instant_data_list_list)
     - `instant_data_list_list` に含まれる瞬時データのファイル名を `instant_data_list` に統合する
 
@@ -33,7 +35,8 @@ expt = ds.model.ExptSet('directory')
 import dynamicstorm as ds # モジュールインポート
 
 expt = ds.model.ExptSet('directory') # オブジェクトの生成
-expt.incorrect_vector_example(100) # 100 個のファイルの誤ベクトル数を確認
+expt.show_incorrect_vector_example(100) # 100 個のファイルの誤ベクトル数を図示
+incorrect_vector_list = expt.get_incorrect_vector_example(100) # 100 個のファイルの誤ベクトル数のリストを取得
 expt.incorrect_vector_filter(300) # 誤ベクトル数が 300 以上のデータを除外
 
 expt2 = ds.model.ExptSet('directory2') # 別のオブジェクトの生成
