@@ -647,7 +647,7 @@ class SpaceAverage:
         uvv[np.isinf(uvv)] = 0
 
         # サイズを標準化
-        y_size = np.linspace(0, 1, size)
+        y_size = np.linspace(y[0], y[-1], size)
         fU = interpolate.interp1d(y, U)
         U = fU(y_size)
         fV = interpolate.interp1d(y, V)
