@@ -441,7 +441,7 @@ class Array2d:
 class SpaceAverage:
     """時間平均かつ空間平均データ"""
 
-    def __init__(self, data_frame=None, source_file=None,
+    def __init__(self, data_frame=None, source_file=None, array_2d_dict=None,
                  grid_shape=[74, 101], crop_range=['', '', '', ''], size=80):
         self.space_averaged_data_frame = None
         self.grid_shape = grid_shape
@@ -451,6 +451,8 @@ class SpaceAverage:
             self.read(source_file)
         elif data_frame is not None:
             self.space_averaging(data_frame, size)
+        elif array_2d_dict is not None:
+            self.space_averaging_from_array_2d(array_2d_dict, size)
 
     def save(self, file_name):
         """空間平均済みデータを保存する"""
@@ -476,7 +478,6 @@ class SpaceAverage:
 
     def space_averaging(self, time_averaged_data_frame, size):
         df = time_averaged_data_frame
-        x = df[label_dict['x']['label']].values.reshape(self.grid_shape)[0, :]
         y = df[label_dict['y']['label']].values.reshape(self.grid_shape)[:, 0]
 
         x_min_index, x_max_index, y_min_index, y_max_index = get_crop_index(time_averaged_data_frame,
@@ -552,6 +553,101 @@ class SpaceAverage:
 
         # サイズを標準化
         y_size = np.linspace(y[0], y[-1], size)
+        fU = interpolate.interp1d(y, U)
+        U = fU(y_size)
+        fV = interpolate.interp1d(y, V)
+        V = fV(y_size)
+        fu = interpolate.interp1d(y, u)
+        u = fu(y_size)
+        fv = interpolate.interp1d(y, v)
+        v = fv(y_size)
+        fuv = interpolate.interp1d(y, uv)
+        uv = fuv(y_size)
+        fuuu = interpolate.interp1d(y, uuu)
+        uuu = fuuu(y_size)
+        fvvv = interpolate.interp1d(y, vvv)
+        vvv = fvvv(y_size)
+        fuuv = interpolate.interp1d(y, uuv)
+        uuv = fuuv(y_size)
+        fuvv = interpolate.interp1d(y, uvv)
+        uvv = fuvv(y_size)
+        fN = interpolate.interp1d(y, N)
+        N = fN(y_size)
+
+        self.space_averaged_data_frame = pd.DataFrame({
+            'y': y_size,
+            'U': U,
+            'V': V,
+            'u': u,
+            'v': v,
+            'uv': uv,
+            'uuu': uuu,
+            'vvv': vvv,
+            'uuv': uuv,
+            'uvv': uvv,
+            'N': N
+        })
+
+    def space_averaging_from_array_2d(self, array_2d_dict, size):
+        array_2d_dict = array_2d_dict
+
+        y = array_2d_dict['y']
+        U_tmp = array_2d_dict['U']
+        V_tmp = array_2d_dict['V']
+        u_tmp = array_2d_dict['u']
+        v_tmp = array_2d_dict['v']
+        uv_tmp = array_2d_dict['uv']
+        uuu_tmp = array_2d_dict['uuu']
+        vvv_tmp = array_2d_dict['vvv']
+        uuv_tmp = array_2d_dict['uuv']
+        uvv_tmp = array_2d_dict['uvv']
+        n_tmp = array_2d_dict['N']
+
+        # それぞれ空間平均する
+        U_tmp = np.nansum(U_tmp * n_tmp, axis=1)
+        V_tmp = np.nansum(V_tmp * n_tmp, axis=1)
+        u_tmp = np.nansum(u_tmp ** 2 * n_tmp, axis=1)
+        v_tmp = np.nansum(v_tmp ** 2 * n_tmp, axis=1)
+        uv_tmp = np.nansum(uv_tmp * n_tmp, axis=1)
+        uuu_tmp = np.nansum(uuu_tmp * n_tmp, axis=1)
+        vvv_tmp = np.nansum(vvv_tmp * n_tmp, axis=1)
+        uuv_tmp = np.nansum(uuv_tmp * n_tmp, axis=1)
+        uvv_tmp = np.nansum(uvv_tmp * n_tmp, axis=1)
+        N = np.sum(n_tmp, axis=1)
+
+        np.seterr(all='ignore')
+        U = U_tmp / N
+        V = V_tmp / N
+        u = np.sqrt(u_tmp / N)
+        v = np.sqrt(v_tmp / N)
+        uv = uv_tmp / N
+        uuu = uuu_tmp / N
+        vvv = vvv_tmp / N
+        uuv = uuv_tmp / N
+        uvv = uvv_tmp / N
+
+        # 0 で割った部分の対処
+        U[np.isnan(U)] = 0
+        V[np.isnan(V)] = 0
+        u[np.isnan(u)] = 0
+        v[np.isnan(v)] = 0
+        uv[np.isnan(uv)] = 0
+        uuu[np.isnan(uuu)] = 0
+        vvv[np.isnan(vvv)] = 0
+        uuv[np.isnan(uuv)] = 0
+        uvv[np.isnan(uvv)] = 0
+        U[np.isinf(U)] = 0
+        V[np.isinf(V)] = 0
+        u[np.isinf(u)] = 0
+        v[np.isinf(v)] = 0
+        uv[np.isinf(uv)] = 0
+        uuu[np.isinf(uuu)] = 0
+        vvv[np.isinf(vvv)] = 0
+        uuv[np.isinf(uuv)] = 0
+        uvv[np.isinf(uvv)] = 0
+
+        # サイズを標準化
+        y_size = np.linspace(0, 1, size)
         fU = interpolate.interp1d(y, U)
         U = fU(y_size)
         fV = interpolate.interp1d(y, V)
