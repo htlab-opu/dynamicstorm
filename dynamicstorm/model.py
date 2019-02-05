@@ -702,19 +702,19 @@ class SpaceAverage:
                 for i, space_averaged_data_frame in enumerate(space_averaged_data_frame_list):
                     if i == 0: continue
                     df1 = self.space_averaged_data_frame
-                    N1 = df1['N'].values
+                    N1 = df1['N']
                     df2 = space_averaged_data_frame
-                    N2 = df2['N'].values
+                    N2 = df2['N']
                     for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
-                        a1 = df1[text].values
-                        a2 = df2[text].values
+                        a1 = df1[text]
+                        a2 = df2[text]
                         data = (a1 * N1 + a2 * N2) / (N1 + N2)
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
                         self.space_averaged_data_frame[text] = data
                     for text in ['u', 'v']:
-                        a1 = df1[text].values
-                        a2 = df2[text].values
+                        a1 = df1[text]
+                        a2 = df2[text]
                         data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
@@ -728,19 +728,19 @@ class SpaceAverage:
             if type(space_averaged_data_frame_list) is list:  # 複数 set のデータ
                 for space_averaged_data_frame in space_averaged_data_frame_list:
                     df1 = self.space_averaged_data_frame
-                    N1 = df1['N'].values
+                    N1 = df1['N']
                     df2 = space_averaged_data_frame
-                    N2 = df2['N'].values
+                    N2 = df2['N']
                     for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
-                        a1 = df1[text].values
-                        a2 = df2[text].values
+                        a1 = df1[text]
+                        a2 = df2[text]
                         data = (a1 * N1 + a2 * N2) / (N1 + N2)
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
                         self.space_averaged_data_frame[text] = data
                     for text in ['u', 'v']:
-                        a1 = df1[text].values
-                        a2 = df2[text].values
+                        a1 = df1[text]
+                        a2 = df2[text]
                         data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
@@ -749,19 +749,19 @@ class SpaceAverage:
             else:  # 1 set のデータのみ
                 space_averaged_data_frame = space_averaged_data_frame_list
                 df1 = self.space_averaged_data_frame
-                N1 = df1['N'].values
+                N1 = df1['N']
                 df2 = space_averaged_data_frame
-                N2 = df2['N'].values
+                N2 = df2['N']
                 for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
-                    a1 = df1[text].values
-                    a2 = df2[text].values
+                    a1 = df1[text]
+                    a2 = df2[text]
                     data = (a1 * N1 + a2 * N2) / (N1 + N2)
                     data[np.isnan(data)] = 0
                     data[np.isinf(data)] = 0
                     self.space_averaged_data_frame[text] = data
                 for text in ['u', 'v']:
-                    a1 = df1[text].values
-                    a2 = df2[text].values
+                    a1 = df1[text]
+                    a2 = df2[text]
                     data = np.sqrt((a1 ** 2 * N1 + a2 ** 2 * N2) / (N1 + N2))
                     data[np.isnan(data)] = 0
                     data[np.isinf(data)] = 0
