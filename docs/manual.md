@@ -188,6 +188,10 @@ space = ds.model.SpaceAverage(
             data_frame=time_averaged_data_frame,
             grid_shape=grid_shape,
             crop_range=crop_range)
+            
+# or
+space = ds.model.SpaceAverage(array_2d_dict=array_2d_dict)
+
 # or
 space = ds.model.SpaceAverage(
             source_file='directory/filename',
@@ -195,6 +199,7 @@ space = ds.model.SpaceAverage(
             crop_range=crop_range)
 ```
 - `data_frame`: pandas dataframe 形式の時間平均済みデータ
+- `array_2d_dict`: [Array2d.array_2d_dict](#Array2d)
 - `source_file`: 保存済みの空間平均データのファイル名
 - `grid_shape`: PIV 時の Interrogation Window のグリッドサイズのリスト
     - `[y 方向のグリッドサイズ, x 方向のグリッドサイズ]`
@@ -241,16 +246,22 @@ space1 = ds.model.SpaceAverage(
             grid_shape=grid_shape,
             crop_range=crop_range)
 
+# 時間平均データからオブジェクトを生成
+space2 = ds.model.SpaceAverage(dict2d.array_2d_dict)
+
 # 保存済みのファイルからオブジェクトを生成
-space2 = ds.model.SpaceAverage(
+space3 = ds.model.SpaceAverage(
             source_file='directory/space_averaged_file02.csv',
             grid_shape=grid_shape,
             crop_range=crop_range)
 
 # 2 つの空間平均データを統合
-space3 = ds.model.SpaceAverage() # 空のオブジェクトを生成
-space3.join([space1.space_averaged_data_frame, space2.space_averaged_data_frame])
-space3.save('directory/space_averaged_file03.csv')
+space4 = ds.model.SpaceAverage() # 空のオブジェクトを生成
+space4.join([
+            space1.space_averaged_data_frame,
+            space2.space_averaged_data_frame,
+            space3.space_averaged_data_frame])
+space4.save('directory/space_averaged_file03.csv')
 
 space3.space_averaged_data_frame # 表示
 ```
