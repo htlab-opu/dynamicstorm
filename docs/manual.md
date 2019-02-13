@@ -246,8 +246,8 @@ space1 = ds.model.SpaceAverage(
             grid_shape=grid_shape,
             crop_range=crop_range)
 
-# 時間平均データからオブジェクトを生成
-space2 = ds.model.SpaceAverage(dict2d.array_2d_dict)
+# 切り出し済みの時間平均データからオブジェクトを生成
+space2 = ds.model.SpaceAverage(array_2d_dict=dict2d.array_2d_dict)
 
 # 保存済みのファイルからオブジェクトを生成
 space3 = ds.model.SpaceAverage(
