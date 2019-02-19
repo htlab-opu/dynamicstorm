@@ -321,7 +321,7 @@ class Array2d:
 
     def crop_array_2d(self, time_averaged_data_frame, grid_shape=[74, 101], crop_range=['', '', '', ''], size=[80, 80]):
         size = (size[0], size[1])
-        df = time_averaged_data_frame
+        df = time_averaged_data_frame.copy()
         x_min_index, x_max_index, y_min_index, y_max_index = get_crop_index(df,
                                                                             grid_shape,
                                                                             crop_range)
@@ -477,7 +477,7 @@ class SpaceAverage:
         self.crop_range = x_min_mm, x_max_mm, y_min_mm, y_max_mm
 
     def space_averaging(self, time_averaged_data_frame, size):
-        df = time_averaged_data_frame
+        df = time_averaged_data_frame.copy()
         y = df[label_dict['y']['label']].values.reshape(self.grid_shape)[:, 0]
 
         x_min_index, x_max_index, y_min_index, y_max_index = get_crop_index(time_averaged_data_frame,
