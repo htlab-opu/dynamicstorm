@@ -263,7 +263,7 @@ class Statistics:
         # ファイルのヘッダ行数を取得する
         file = open(file_name, 'r')
         for i, line in enumerate(file):
-            if line[0] == 'x':
+            if line.find("x") >= 0:
                 file.close()
                 return i
         file.close()
@@ -688,7 +688,7 @@ class SpaceAverage:
         """データのヘッダ行数を取得する"""
         file = open(file, 'r')
         for i, line in enumerate(file):
-            if line[0] == 'y':
+            if line.find("y") >= 0:
                 file.close()
                 return i
         file.close()
@@ -782,7 +782,7 @@ class InstantData:
         """データのヘッダ行数を取得する"""
         file = open(file, 'r')
         for i, line in enumerate(file):
-            if line[0] == 'x':
+            if line.find("x") >= 0:
                 file.close()
                 return i
         file.close()
