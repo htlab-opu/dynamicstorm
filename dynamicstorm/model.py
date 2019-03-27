@@ -292,7 +292,7 @@ def time_averaging_parallel_task(args):
     vvv = N
     uuv = N
     uvv = N
-
+    print('task' + str(current_core + 1) + '/' + str(total_core) + ', from', start, 'to', end)
     for i in tqdm(range(start, end), desc=text):
         df = pd.read_csv(file_list[i], header=header)
         U_tmp = df[label_dict['U']['label']].values
@@ -591,7 +591,7 @@ class SpaceAverage:
     def space_averaging_from_array_2d(self, array_2d_dict, size):
         array_2d_dict = array_2d_dict
 
-        y = array_2d_dict['y'][:,0]
+        y = array_2d_dict['y'][:, 0]
         U_tmp = array_2d_dict['U']
         V_tmp = array_2d_dict['V']
         u_tmp = array_2d_dict['u']
