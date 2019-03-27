@@ -105,8 +105,8 @@ def parallel_task(args):
     """並列計算タスク"""
     file_list, total_core, current_core, filter_value = args
     file_count = len(file_list)
-    start = int(file_count * current_core / total_core)
-    end = int(file_count * (current_core + 1) // total_core)
+    start = int(file_count * current_core // total_core)
+    end = int(file_count * (current_core + 1) // total_core)-1
     header = dymod.InstantData.get_header_row(file_list[0])
     error_file_index_list = []
     print('task' + str(current_core + 1) + '/' + str(total_core) + ', from', start, 'to', end)

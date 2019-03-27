@@ -273,8 +273,8 @@ def time_averaging_parallel_task(args):
     """並列計算タスク"""
     file_list, total_core, current_core = args
     file_count = len(file_list)
-    start = int(file_count * current_core / total_core)
-    end = int(file_count * (current_core + 1) // total_core)
+    start = int(file_count * current_core // total_core)
+    end = int(file_count * (current_core + 1) // total_core)-1
     header = InstantData.get_header_row(file_list[0])
     text = 'time averaging task ' + \
            str(current_core + 1) + '/' + str(total_core)
