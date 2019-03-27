@@ -109,7 +109,6 @@ def parallel_task(args):
     end = int(file_count * (current_core + 1) // total_core)-1
     header = dymod.InstantData.get_header_row(file_list[0])
     error_file_index_list = []
-    print('task' + str(current_core + 1) + '/' + str(total_core) + ', from', start, 'to', end)
     text = 'filtering task ' + str(current_core + 1) + '/' + str(total_core)
     for i in tqdm(range(start, end), desc=text):
         status = pd.read_csv(file_list[i], header=header)['Status']
