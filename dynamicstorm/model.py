@@ -195,7 +195,7 @@ class Statistics:
                     N1 = df1[label_dict['N']['label']].copy()
                     df2 = time_averaged_data_frame
                     N2 = df2[label_dict['N']['label']].copy()
-                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                    for text in ['U', 'V', 'uv']:
                         a1 = df1[label_dict[text]['label']].copy()
                         a2 = df2[label_dict[text]['label']].copy()
                         data = (a1 * N1 + a2 * N2) / (N1 + N2)
@@ -209,6 +209,16 @@ class Statistics:
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
                         self.time_averaged_data_frame[label_dict[text]['label']] = data.copy()
+                    try:
+                        for text in ['uuu', 'vvv', 'uuv', 'uvv']:
+                            a1 = df1[label_dict[text]['label']].copy()
+                            a2 = df2[label_dict[text]['label']].copy()
+                            data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                            data[np.isnan(data)] = 0
+                            data[np.isinf(data)] = 0
+                            self.time_averaged_data_frame[label_dict[text]['label']] = data.copy()
+                    except:
+                        pass
                     self.time_averaged_data_frame[label_dict['N']['label']] = N1 + N2
 
             else:  # データフレームを一つだけ渡された場合
@@ -222,7 +232,7 @@ class Statistics:
                     N1 = df1[label_dict['N']['label']].copy()
                     df2 = time_averaged_data_frame.copy()
                     N2 = df2[label_dict['N']['label']].copy()
-                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                    for text in ['U', 'V', 'uv']:
                         a1 = df1[label_dict[text]['label']].copy()
                         a2 = df2[label_dict[text]['label']].copy()
                         data = (a1 * N1 + a2 * N2) / (N1 + N2)
@@ -236,13 +246,23 @@ class Statistics:
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
                         self.time_averaged_data_frame[label_dict[text]['label']] = data.copy()
+                    try:
+                        for text in ['uuu', 'vvv', 'uuv', 'uvv']:
+                            a1 = df1[label_dict[text]['label']].copy()
+                            a2 = df2[label_dict[text]['label']].copy()
+                            data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                            data[np.isnan(data)] = 0
+                            data[np.isinf(data)] = 0
+                            self.time_averaged_data_frame[label_dict[text]['label']] = data.copy()
+                    except:
+                        pass
                     self.time_averaged_data_frame[label_dict['N']['label']] = N1 + N2
             else:
                 df1 = self.time_averaged_data_frame
                 N1 = df1[label_dict['N']['label']].copy()
                 df2 = time_averaged_data_frame_list
                 N2 = df2[label_dict['N']['label']].copy()
-                for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                for text in ['U', 'V', 'uv']:
                     a1 = df1[label_dict[text]['label']].copy()
                     a2 = df2[label_dict[text]['label']].copy()
                     data = (a1 * N1 + a2 * N2) / (N1 + N2)
@@ -256,6 +276,16 @@ class Statistics:
                     data[np.isnan(data)] = 0
                     data[np.isinf(data)] = 0
                     self.time_averaged_data_frame[label_dict[text]['label']] = data.copy()
+                try:
+                    for text in ['uuu', 'vvv', 'uuv', 'uvv']:
+                        a1 = df1[label_dict[text]['label']].copy()
+                        a2 = df2[label_dict[text]['label']].copy()
+                        data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.time_averaged_data_frame[label_dict[text]['label']] = data.copy()
+                except:
+                    pass
                 self.time_averaged_data_frame[label_dict['N']['label']] = N1 + N2
 
     @staticmethod
@@ -274,7 +304,7 @@ def time_averaging_parallel_task(args):
     file_list, total_core, current_core = args
     file_count = len(file_list)
     start = int(file_count * current_core // total_core)
-    end = int(file_count * (current_core + 1) // total_core)-1
+    end = int(file_count * (current_core + 1) // total_core) - 1
     header = InstantData.get_header_row(file_list[0])
     text = 'time averaging task ' + \
            str(current_core + 1) + '/' + str(total_core)
@@ -334,14 +364,20 @@ class Array2d:
                        x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
         uv = cv2.resize(df[label_dict['uv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        uuu = cv2.resize(df[label_dict['uuu']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        vvv = cv2.resize(df[label_dict['vvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        uuv = cv2.resize(df[label_dict['uuv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
-        uvv = cv2.resize(df[label_dict['uvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
-                         x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        try:
+            uuu = cv2.resize(df[label_dict['uuu']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                             x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+            vvv = cv2.resize(df[label_dict['vvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                             x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+            uuv = cv2.resize(df[label_dict['uuv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                             x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+            uvv = cv2.resize(df[label_dict['uvv']['label']].values.reshape(grid_shape)[y_min_index:y_max_index + 1,
+                             x_min_index:x_max_index + 1], size, interpolation=cv2.INTER_CUBIC)
+        except:
+            uuu = np.none
+            vvv = np.none
+            uuv = np.none
+            uvv = np.none
 
         x = np.linspace(0, 1, size[0])
         y = np.linspace(0, 1, size[1])
@@ -374,7 +410,7 @@ class Array2d:
                     N1 = array_2d_dict1['N']
                     array_2d_dict2 = array_2d_dict
                     N2 = array_2d_dict2['N']
-                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                    for text in ['U', 'V', 'uv']:
                         a1 = array_2d_dict1[text]
                         a2 = array_2d_dict2[text]
                         data = (a1 * N1 + a2 * N2) / (N1 + N2)
@@ -388,6 +424,16 @@ class Array2d:
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
                         self.array_2d_dict[text] = data
+                    try:
+                        for text in ['uuu', 'vvv', 'uuv', 'uvv']:
+                            a1 = array_2d_dict1[text]
+                            a2 = array_2d_dict2[text]
+                            data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                            data[np.isnan(data)] = 0
+                            data[np.isinf(data)] = 0
+                            self.array_2d_dict[text] = data
+                    except:
+                        pass
                     self.array_2d_dict['N'] = N1 + N2
 
             else:  # データフレームを一つだけ渡された場合
@@ -400,7 +446,7 @@ class Array2d:
                     N1 = array_2d_dict1['N']
                     array_2d_dict2 = array_2d_dict
                     N2 = array_2d_dict2['N']
-                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                    for text in ['U', 'V', 'uv']:
                         a1 = array_2d_dict1[text]
                         a2 = array_2d_dict2[text]
                         data = (a1 * N1 + a2 * N2) / (N1 + N2)
@@ -414,13 +460,23 @@ class Array2d:
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
                         self.array_2d_dict[text] = data
+                    try:
+                        for text in ['uuu', 'vvv', 'uuv', 'uvv']:
+                            a1 = array_2d_dict1[text]
+                            a2 = array_2d_dict2[text]
+                            data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                            data[np.isnan(data)] = 0
+                            data[np.isinf(data)] = 0
+                            self.array_2d_dict[text] = data
+                    except:
+                        pass
                     self.array_2d_dict['N'] = N1 + N2
             else:
                 array_2d_dict1 = self.array_2d_dict
                 N1 = array_2d_dict1['N']
                 array_2d_dict2 = array_2d_dict_list
                 N2 = array_2d_dict2['N']
-                for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                for text in ['U', 'V', 'uv']:
                     a1 = array_2d_dict1[text]
                     a2 = array_2d_dict2[text]
                     data = (a1 * N1 + a2 * N2) / (N1 + N2)
@@ -434,6 +490,16 @@ class Array2d:
                     data[np.isnan(data)] = 0
                     data[np.isinf(data)] = 0
                     self.array_2d_dict[text] = data
+                try:
+                    for text in ['uuu', 'vvv', 'uuv', 'uvv']:
+                        a1 = array_2d_dict1[text]
+                        a2 = array_2d_dict2[text]
+                        data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.array_2d_dict[text] = data
+                except:
+                    pass
                 self.array_2d_dict['N'] = N1 + N2
 
 
@@ -496,14 +562,17 @@ class SpaceAverage:
                 x_min_index:x_max_index + 1]
         uv_tmp = df[label_dict['uv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
                  x_min_index:x_max_index + 1]
-        uuu_tmp = df[label_dict['uuu']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
-                  x_min_index:x_max_index + 1]
-        vvv_tmp = df[label_dict['vvv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
-                  x_min_index:x_max_index + 1]
-        uuv_tmp = df[label_dict['uuv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
-                  x_min_index:x_max_index + 1]
-        uvv_tmp = df[label_dict['uvv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
-                  x_min_index:x_max_index + 1]
+        try:
+            uuu_tmp = df[label_dict['uuu']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                      x_min_index:x_max_index + 1]
+            vvv_tmp = df[label_dict['vvv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                      x_min_index:x_max_index + 1]
+            uuv_tmp = df[label_dict['uuv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                      x_min_index:x_max_index + 1]
+            uvv_tmp = df[label_dict['uvv']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
+                      x_min_index:x_max_index + 1]
+        except:
+            pass
         n_tmp = df[label_dict['N']['label']].values.reshape(self.grid_shape)[y_min_index:y_max_index + 1,
                 x_min_index:x_max_index + 1]
 
@@ -513,10 +582,13 @@ class SpaceAverage:
         u_tmp = np.nansum(u_tmp ** 2 * n_tmp, axis=1)
         v_tmp = np.nansum(v_tmp ** 2 * n_tmp, axis=1)
         uv_tmp = np.nansum(uv_tmp * n_tmp, axis=1)
-        uuu_tmp = np.nansum(uuu_tmp * n_tmp, axis=1)
-        vvv_tmp = np.nansum(vvv_tmp * n_tmp, axis=1)
-        uuv_tmp = np.nansum(uuv_tmp * n_tmp, axis=1)
-        uvv_tmp = np.nansum(uvv_tmp * n_tmp, axis=1)
+        try:
+            uuu_tmp = np.nansum(uuu_tmp * n_tmp, axis=1)
+            vvv_tmp = np.nansum(vvv_tmp * n_tmp, axis=1)
+            uuv_tmp = np.nansum(uuv_tmp * n_tmp, axis=1)
+            uvv_tmp = np.nansum(uvv_tmp * n_tmp, axis=1)
+        except:
+            pass
         N = np.sum(n_tmp, axis=1)
 
         np.seterr(all='ignore')
@@ -525,10 +597,13 @@ class SpaceAverage:
         u = np.sqrt(u_tmp / N)
         v = np.sqrt(v_tmp / N)
         uv = uv_tmp / N
-        uuu = uuu_tmp / N
-        vvv = vvv_tmp / N
-        uuv = uuv_tmp / N
-        uvv = uvv_tmp / N
+        try:
+            uuu = uuu_tmp / N
+            vvv = vvv_tmp / N
+            uuv = uuv_tmp / N
+            uvv = uvv_tmp / N
+        except:
+            pass
 
         # 0 で割った部分の対処
         U[np.isnan(U)] = 0
@@ -536,19 +611,22 @@ class SpaceAverage:
         u[np.isnan(u)] = 0
         v[np.isnan(v)] = 0
         uv[np.isnan(uv)] = 0
-        uuu[np.isnan(uuu)] = 0
-        vvv[np.isnan(vvv)] = 0
-        uuv[np.isnan(uuv)] = 0
-        uvv[np.isnan(uvv)] = 0
         U[np.isinf(U)] = 0
         V[np.isinf(V)] = 0
         u[np.isinf(u)] = 0
         v[np.isinf(v)] = 0
         uv[np.isinf(uv)] = 0
-        uuu[np.isinf(uuu)] = 0
-        vvv[np.isinf(vvv)] = 0
-        uuv[np.isinf(uuv)] = 0
-        uvv[np.isinf(uvv)] = 0
+        try:
+            uuu[np.isnan(uuu)] = 0
+            vvv[np.isnan(vvv)] = 0
+            uuv[np.isnan(uuv)] = 0
+            uvv[np.isnan(uvv)] = 0
+            uuu[np.isinf(uuu)] = 0
+            vvv[np.isinf(vvv)] = 0
+            uuv[np.isinf(uuv)] = 0
+            uvv[np.isinf(uvv)] = 0
+        except:
+            pass
 
         # サイズを標準化
         y_size = np.linspace(y[0], y[-1], size)
@@ -562,30 +640,44 @@ class SpaceAverage:
         v = fv(y_size)
         fuv = interpolate.interp1d(y, uv)
         uv = fuv(y_size)
-        fuuu = interpolate.interp1d(y, uuu)
-        uuu = fuuu(y_size)
-        fvvv = interpolate.interp1d(y, vvv)
-        vvv = fvvv(y_size)
-        fuuv = interpolate.interp1d(y, uuv)
-        uuv = fuuv(y_size)
-        fuvv = interpolate.interp1d(y, uvv)
-        uvv = fuvv(y_size)
+        try:
+            fuuu = interpolate.interp1d(y, uuu)
+            uuu = fuuu(y_size)
+            fvvv = interpolate.interp1d(y, vvv)
+            vvv = fvvv(y_size)
+            fuuv = interpolate.interp1d(y, uuv)
+            uuv = fuuv(y_size)
+            fuvv = interpolate.interp1d(y, uvv)
+            uvv = fuvv(y_size)
+        except:
+            pass
         fN = interpolate.interp1d(y, N)
         N = fN(y_size)
 
-        self.space_averaged_data_frame = pd.DataFrame({
-            'y': y_size,
-            'U': U,
-            'V': V,
-            'u': u,
-            'v': v,
-            'uv': uv,
-            'uuu': uuu,
-            'vvv': vvv,
-            'uuv': uuv,
-            'uvv': uvv,
-            'N': N
-        })
+        try:
+            self.space_averaged_data_frame = pd.DataFrame({
+                'y': y_size,
+                'U': U,
+                'V': V,
+                'u': u,
+                'v': v,
+                'uv': uv,
+                'uuu': uuu,
+                'vvv': vvv,
+                'uuv': uuv,
+                'uvv': uvv,
+                'N': N
+            })
+        except:
+            self.space_averaged_data_frame = pd.DataFrame({
+                'y': y_size,
+                'U': U,
+                'V': V,
+                'u': u,
+                'v': v,
+                'uv': uv,
+                'N': N
+            })
 
     def space_averaging_from_array_2d(self, array_2d_dict, size):
         array_2d_dict = array_2d_dict
@@ -596,10 +688,13 @@ class SpaceAverage:
         u_tmp = array_2d_dict['u']
         v_tmp = array_2d_dict['v']
         uv_tmp = array_2d_dict['uv']
-        uuu_tmp = array_2d_dict['uuu']
-        vvv_tmp = array_2d_dict['vvv']
-        uuv_tmp = array_2d_dict['uuv']
-        uvv_tmp = array_2d_dict['uvv']
+        try:
+            uuu_tmp = array_2d_dict['uuu']
+            vvv_tmp = array_2d_dict['vvv']
+            uuv_tmp = array_2d_dict['uuv']
+            uvv_tmp = array_2d_dict['uvv']
+        except:
+            pass
         n_tmp = array_2d_dict['N']
 
         # それぞれ空間平均する
@@ -608,10 +703,13 @@ class SpaceAverage:
         u_tmp = np.nansum(u_tmp ** 2 * n_tmp, axis=1)
         v_tmp = np.nansum(v_tmp ** 2 * n_tmp, axis=1)
         uv_tmp = np.nansum(uv_tmp * n_tmp, axis=1)
-        uuu_tmp = np.nansum(uuu_tmp * n_tmp, axis=1)
-        vvv_tmp = np.nansum(vvv_tmp * n_tmp, axis=1)
-        uuv_tmp = np.nansum(uuv_tmp * n_tmp, axis=1)
-        uvv_tmp = np.nansum(uvv_tmp * n_tmp, axis=1)
+        try:
+            uuu_tmp = np.nansum(uuu_tmp * n_tmp, axis=1)
+            vvv_tmp = np.nansum(vvv_tmp * n_tmp, axis=1)
+            uuv_tmp = np.nansum(uuv_tmp * n_tmp, axis=1)
+            uvv_tmp = np.nansum(uvv_tmp * n_tmp, axis=1)
+        except:
+            pass
         N = np.sum(n_tmp, axis=1)
 
         np.seterr(all='ignore')
@@ -620,10 +718,13 @@ class SpaceAverage:
         u = np.sqrt(u_tmp / N)
         v = np.sqrt(v_tmp / N)
         uv = uv_tmp / N
-        uuu = uuu_tmp / N
-        vvv = vvv_tmp / N
-        uuv = uuv_tmp / N
-        uvv = uvv_tmp / N
+        try:
+            uuu = uuu_tmp / N
+            vvv = vvv_tmp / N
+            uuv = uuv_tmp / N
+            uvv = uvv_tmp / N
+        except:
+            pass
 
         # 0 で割った部分の対処
         U[np.isnan(U)] = 0
@@ -631,19 +732,22 @@ class SpaceAverage:
         u[np.isnan(u)] = 0
         v[np.isnan(v)] = 0
         uv[np.isnan(uv)] = 0
-        uuu[np.isnan(uuu)] = 0
-        vvv[np.isnan(vvv)] = 0
-        uuv[np.isnan(uuv)] = 0
-        uvv[np.isnan(uvv)] = 0
         U[np.isinf(U)] = 0
         V[np.isinf(V)] = 0
         u[np.isinf(u)] = 0
         v[np.isinf(v)] = 0
         uv[np.isinf(uv)] = 0
-        uuu[np.isinf(uuu)] = 0
-        vvv[np.isinf(vvv)] = 0
-        uuv[np.isinf(uuv)] = 0
-        uvv[np.isinf(uvv)] = 0
+        try:
+            uuu[np.isnan(uuu)] = 0
+            vvv[np.isnan(vvv)] = 0
+            uuv[np.isnan(uuv)] = 0
+            uvv[np.isnan(uvv)] = 0
+            uuu[np.isinf(uuu)] = 0
+            vvv[np.isinf(vvv)] = 0
+            uuv[np.isinf(uuv)] = 0
+            uvv[np.isinf(uvv)] = 0
+        except:
+            pass
 
         # サイズを標準化
         y_size = np.linspace(y[0], y[-1], size)
@@ -657,30 +761,45 @@ class SpaceAverage:
         v = fv(y_size)
         fuv = interpolate.interp1d(y, uv)
         uv = fuv(y_size)
-        fuuu = interpolate.interp1d(y, uuu)
-        uuu = fuuu(y_size)
-        fvvv = interpolate.interp1d(y, vvv)
-        vvv = fvvv(y_size)
-        fuuv = interpolate.interp1d(y, uuv)
-        uuv = fuuv(y_size)
-        fuvv = interpolate.interp1d(y, uvv)
-        uvv = fuvv(y_size)
+        try:
+            fuuu = interpolate.interp1d(y, uuu)
+            uuu = fuuu(y_size)
+            fvvv = interpolate.interp1d(y, vvv)
+            vvv = fvvv(y_size)
+            fuuv = interpolate.interp1d(y, uuv)
+            uuv = fuuv(y_size)
+            fuvv = interpolate.interp1d(y, uvv)
+            uvv = fuvv(y_size)
+        except:
+            pass
         fN = interpolate.interp1d(y, N)
         N = fN(y_size)
 
-        self.space_averaged_data_frame = pd.DataFrame({
-            'y': y_size,
-            'U': U,
-            'V': V,
-            'u': u,
-            'v': v,
-            'uv': uv,
-            'uuu': uuu,
-            'vvv': vvv,
-            'uuv': uuv,
-            'uvv': uvv,
-            'N': N
-        })
+        try:
+            self.space_averaged_data_frame = pd.DataFrame({
+                'y': y_size,
+                'U': U,
+                'V': V,
+                'u': u,
+                'v': v,
+                'uv': uv,
+                'uuu': uuu,
+                'vvv': vvv,
+                'uuv': uuv,
+                'uvv': uvv,
+                'N': N
+            })
+        except:
+            self.space_averaged_data_frame = pd.DataFrame({
+                'y': y_size,
+                'U': U,
+                'V': V,
+                'u': u,
+                'v': v,
+                'uv': uv,
+                'N': N
+            })
+
 
     @staticmethod
     def get_header_row(file):
@@ -704,7 +823,7 @@ class SpaceAverage:
                     N1 = df1['N']
                     df2 = space_averaged_data_frame.copy()
                     N2 = df2['N']
-                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                    for text in ['U', 'V', 'uv']:
                         a1 = df1[text]
                         a2 = df2[text]
                         data = (a1 * N1 + a2 * N2) / (N1 + N2)
@@ -718,6 +837,16 @@ class SpaceAverage:
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
                         self.space_averaged_data_frame[text] = data.copy()
+                    try:
+                        for text in ['uuu', 'vvv', 'uuv', 'uvv']:
+                            a1 = df1[text]
+                            a2 = df2[text]
+                            data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                            data[np.isnan(data)] = 0
+                            data[np.isinf(data)] = 0
+                            self.space_averaged_data_frame[text] = data.copy()
+                    except:
+                        pass
                 self.space_averaged_data_frame['N'] = N1 + N2
             else:  # 1 set のデータのみ
                 space_averaged_data_frame = space_averaged_data_frame_list.copy()
@@ -730,7 +859,7 @@ class SpaceAverage:
                     N1 = df1['N']
                     df2 = space_averaged_data_frame.copy()
                     N2 = df2['N']
-                    for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                    for text in ['U', 'V', 'uv']:
                         a1 = df1[text]
                         a2 = df2[text]
                         data = (a1 * N1 + a2 * N2) / (N1 + N2)
@@ -744,6 +873,16 @@ class SpaceAverage:
                         data[np.isnan(data)] = 0
                         data[np.isinf(data)] = 0
                         self.space_averaged_data_frame[text] = data.copy()
+                    try:
+                        for text in ['uuu', 'vvv', 'uuv', 'uvv']:
+                            a1 = df1[text]
+                            a2 = df2[text]
+                            data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                            data[np.isnan(data)] = 0
+                            data[np.isinf(data)] = 0
+                            self.space_averaged_data_frame[text] = data.copy()
+                    except:
+                        pass
                 self.space_averaged_data_frame['N'] = N1 + N2
             else:  # 1 set のデータのみ
                 space_averaged_data_frame = space_averaged_data_frame_list.copy()
@@ -751,7 +890,7 @@ class SpaceAverage:
                 N1 = df1['N']
                 df2 = space_averaged_data_frame.copy()
                 N2 = df2['N']
-                for text in ['U', 'V', 'uuu', 'vvv', 'uuv', 'uvv', 'uv']:
+                for text in ['U', 'V', 'uv']:
                     a1 = df1[text]
                     a2 = df2[text]
                     data = (a1 * N1 + a2 * N2) / (N1 + N2)
@@ -765,6 +904,17 @@ class SpaceAverage:
                     data[np.isnan(data)] = 0
                     data[np.isinf(data)] = 0
                     self.space_averaged_data_frame[text] = data.copy()
+                try:
+                    for text in ['uuu', 'vvv', 'uuv', 'uvv']:
+                        a1 = df1[text]
+                        a2 = df2[text]
+                        data = (a1 * N1 + a2 * N2) / (N1 + N2)
+                        data[np.isnan(data)] = 0
+                        data[np.isinf(data)] = 0
+                        self.space_averaged_data_frame[text] = data.copy()
+                except:
+                    pass
+
                 self.space_averaged_data_frame['N'] = N1 + N2
 
 
