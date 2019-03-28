@@ -293,7 +293,7 @@ class Statistics:
         # ファイルのヘッダ行数を取得する
         file = open(file_name, 'r')
         for i, line in enumerate(file):
-            if line.find("x (mm)[mm]") >= 0:
+            if line.find(label_dict['x']['label']) >= 0:
                 file.close()
                 return i
         file.close()
@@ -931,7 +931,7 @@ class InstantData:
         """データのヘッダ行数を取得する"""
         file = open(file, 'r')
         for i, line in enumerate(file):
-            if line.find("x (mm)[mm]") >= 0:
+            if line.find(label_dict['x']['label']) >= 0:
                 file.close()
                 return i
         file.close()
