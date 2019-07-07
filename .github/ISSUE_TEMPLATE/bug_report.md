@@ -1,38 +1,36 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
-
+name: 'バグレポート'
+タイトル: 'バグレポートのタイトル'
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**バグの概要**
+ここにバグの概要を書く．
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**バグが発生する条件**
+バグを再現するための方法．
+1. 〇〇をインポートする
+2. ✕✕する
+3. △△する
+4. ...
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+バグが発生したときのコード:
+```Python
+import numpy
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+x = np.array([1, 2, 3])
+print(x)
+print('example of code')
+```
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+**エラー出力**
+```
+example
+with open('not_exist_file.txt') as f:
+    print(f.read())
 
-**Additional context**
-Add any other context about the problem here.
+FileNotFoundError: [Errno 2] No such file or directory: 'not_exist_file.txt'
+```
+
+**その他**
+他に何かあればここに書く．
