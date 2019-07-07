@@ -1,5 +1,5 @@
 # DynamicStorm
-This python3 module is for the vector file which is output from DynamicStudio.
+This python3 module is for the csv vector file.
 
 Functions:
 
