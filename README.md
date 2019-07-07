@@ -7,6 +7,8 @@ Functions:
 - turbulent statistics
 - space averaging
 
+![processing flow](docs/flow.jpg)
+
 ## Getting Start
 - [Setup](docs/setup.md)
 
